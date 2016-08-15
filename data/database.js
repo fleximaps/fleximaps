@@ -1,33 +1,70 @@
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
+import Tileset from './models/Tileset';
+import Tile from './models/Tile';
+import TilesRow from './models/TilesRow';
 
-// Model types
-class User {}
-class Widget {}
+const TILES_X = 10;
+const TILES_Y = 10;
+const TILE_TYPES = 10;
 
 // Mock data
-var viewer = new User();
-viewer.id = '1';
-viewer.name = 'Anonymous';
-var widgets = ['What\'s-it', 'Who\'s-it', 'How\'s-it'].map((name, i) => {
-  var widget = new Widget();
-  widget.name = name;
-  widget.id = `${i}`;
-  return widget;
-});
+const tileset = new Tileset();
+tileset.id = '0';
+
+const tilesRows = [];
+for(let y = 0; y < TILES_Y; y++){
+
+  const tilesInTheRow = [];
+  for(let x = 0; x < TILES_X; x++){
+    const tile = new Tile();
+    tile.id = `${x}-${y}`;
+    tile.type = Math.floor((Math.random() * TILE_TYPES));
+
+    tilesInTheRow.push(tile);
+  }
+
+  const tilesRow = new TilesRow();
+  tilesRow.id = `${y}`;
+  tilesRow.tiles = tilesInTheRow;
+
+  tilesRows.push(tilesRow);
+}
+
+const getTileset = function(){
+  return tileset;
+};
+
+const getTilesRows = function () {
+  return tilesRows;
+};
+
+const getTilesInRow = function (y) {
+  const tilesRow = tilesRows[y];
+
+  if(typeof tilesRow === 'undefined'){
+    return null;
+  }
+
+  return tilesRow.tiles;
+};
+
+const getTile = function(x, y){
+  const tilesRow = getTilesInRow(y);
+
+  if(typeof tilesRow === 'undefined'){
+    return null;
+  }
+
+  const tile = tilesRow[x];
+  if(typeof tile === 'undefined'){
+    return null;
+  }else{
+    return tile;
+  }
+};
 
 module.exports = {
-  // Export methods that your schema can use to interact with your database
-  getUser: (id) => id === viewer.id ? viewer : null,
-  getViewer: () => viewer,
-  getWidget: (id) => widgets.find(w => w.id === id),
-  getWidgets: () => widgets,
-  User,
-  Widget,
+  getTileset: getTileset,
+  getTilesRows: getTilesRows,
+  getTilesInRow: getTilesInRow,
+  getTile: getTile
 };
