@@ -1,12 +1,3 @@
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -29,14 +20,16 @@ import {
   nodeDefinitions,
 } from 'graphql-relay';
 
+import Tile from './models/Tile';
+import Tileset from './models/Tileset';
+import TilesRow from './models/TilesRow';
+
 import {
   // Import methods that your schema can use to interact with your database
-  User,
-  Widget,
-  getUser,
-  getViewer,
-  getWidget,
-  getWidgets,
+  getTile,
+  getTilesRows,
+  getTileset,
+  getTilesInRow
 } from './database';
 
 /**
@@ -48,19 +41,28 @@ import {
 var {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
     var {type, id} = fromGlobalId(globalId);
-    if (type === 'User') {
-      return getUser(id);
-    } else if (type === 'Widget') {
-      return getWidget(id);
+    if (type === 'Tile') {
+      const splittedId = id.split('-');
+
+      if(splittedId.length !== 2){
+        return null;
+      }
+
+      const x = splittedId[0];
+      const y = splittedId[1];
+
+      return getTile(x, y);
+    } else if(type === 'Tileset'){
+      return getTileset(id);
     } else {
       return null;
     }
   },
   (obj) => {
-    if (obj instanceof User) {
-      return userType;
-    } else if (obj instanceof Widget)  {
-      return widgetType;
+    if (obj instanceof Tile) {
+      return TileType;
+    } else if (obj instanceof Tileset)  {
+      return TilesetType;
     } else {
       return null;
     }
@@ -71,39 +73,48 @@ var {nodeInterface, nodeField} = nodeDefinitions(
  * Define your own types here
  */
 
-var userType = new GraphQLObjectType({
-  name: 'User',
-  description: 'A person who uses our app',
+var TilesetType = new GraphQLObjectType({
+  name: 'Tileset',
+  description: 'A tileset',
   fields: () => ({
-    id: globalIdField('User'),
-    widgets: {
-      type: widgetConnection,
-      description: 'A person\'s collection of widgets',
-      args: connectionArgs,
-      resolve: (_, args) => connectionFromArray(getWidgets(), args),
-    },
+    id: globalIdField('Tileset'),
+    rows: {
+      type: new GraphQLList(TilesRowType),
+      description: 'Tile rows in a tileset',
+      resolve: () => getTilesRows()
+    }
   }),
-  interfaces: [nodeInterface],
+  interfaces: [nodeInterface]
 });
 
-var widgetType = new GraphQLObjectType({
-  name: 'Widget',
-  description: 'A shiny widget',
+var TilesRowType = new GraphQLObjectType({
+  name: 'TilesRow',
+  description: 'A tiles row',
   fields: () => ({
-    id: globalIdField('Widget'),
-    name: {
-      type: GraphQLString,
-      description: 'The name of the widget',
-    },
+    id: globalIdField('TilesRow'),
+    tiles: {
+      type: new GraphQLList(TileType),
+      description: 'Tiles in a row',
+      resolve: function(tilesRow){
+        return getTilesInRow(tilesRow.id);
+      }
+    }
   }),
-  interfaces: [nodeInterface],
+  interfaces: [nodeInterface]
 });
 
-/**
- * Define your own connection types here
- */
-var {connectionType: widgetConnection} =
-  connectionDefinitions({name: 'Widget', nodeType: widgetType});
+var TileType = new GraphQLObjectType({
+  name: 'Tile',
+  description: 'A tile',
+  fields: () => ({
+    id: globalIdField('Tile'),
+    type: {
+      type: GraphQLInt,
+      description: 'The type of a tile'
+    }
+  }),
+  interfaces: [nodeInterface]
+});
 
 /**
  * This is the type that will be the root of our query,
@@ -114,11 +125,11 @@ var queryType = new GraphQLObjectType({
   fields: () => ({
     node: nodeField,
     // Add your own root fields here
-    viewer: {
-      type: userType,
-      resolve: () => getViewer(),
-    },
-  }),
+    tileset: {
+      type: TilesetType,
+      resolve: () => getTileset()
+    }
+  })
 });
 
 /**
