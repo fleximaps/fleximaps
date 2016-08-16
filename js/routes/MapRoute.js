@@ -2,11 +2,11 @@ import Relay from 'react-relay';
 
 export default class extends Relay.Route {
   static queries = {
-    viewer: () => Relay.QL`
+    tileset: () => Relay.QL`
       query {
-        viewer
+        tileset
       }
     `,
   };
-  static routeName = 'AppHomeRoute';
+  static routeName = 'MapRoute';
 }
