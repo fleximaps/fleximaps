@@ -3,15 +3,22 @@ import Relay from 'react-relay';
 
 class Map extends React.Component {
     render() {
+        const tileset = this.props.tileset;
         return (
             <div>
                 <h1>Tileset</h1>
                 <table>
                     <tbody>
-                    {this.props.tileset.rows.map(row =>
+                    {tileset.rows.map(row =>
                         <tr key={row.id}>
                             {row.tiles.map(tile =>
-                                <td key={tile.id}>{tile.type}</td>
+                                <td key={tile.id}>
+                                    <select readOnly={true} value={tile.type}>
+                                        {tileset.availableTileTypes.map(availableTileType =>
+                                            <option key={availableTileType} value={availableTileType}>{availableTileType}</option>
+                                        )}
+                                    </select>
+                                </td>
                             )}
                         </tr>
                     )}
@@ -33,7 +40,8 @@ export default Relay.createContainer(Map, {
                         type
                     },
                 },
+                availableTileTypes
             }
-        `,
-    },
+        `
+    }
 });
