@@ -56,6 +56,21 @@ const getAvailableTileTypes = function () {
     return availableTileTypes;
 };
 
+const setTileType = function(x, y, newTileType){
+    if(availableTileTypes.indexOf(newTileType) === -1){
+        return null;
+    }
+
+    const tile = getTile(x, y);
+
+    if(tile === null){
+        return null;
+    }
+
+    tile.type = newTileType;
+    return tile;
+};
+
 const getTile = function (x, y) {
     const tilesRow = getTilesInRow(y);
 
@@ -76,5 +91,6 @@ module.exports = {
     getTilesRows: getTilesRows,
     getTilesInRow: getTilesInRow,
     getTile: getTile,
+    setTileType: setTileType,
     getAvailableTileTypes: getAvailableTileTypes
 };
