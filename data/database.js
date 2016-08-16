@@ -7,64 +7,74 @@ const TILES_Y = 10;
 const TILE_TYPES = 10;
 
 // Mock data
+const availableTileTypes = [];
+for (let i = 0; i < TILE_TYPES; i++) {
+    availableTileTypes.push(i);
+}
+
 const tileset = new Tileset();
 tileset.id = '0';
 
 const tilesRows = [];
-for(let y = 0; y < TILES_Y; y++){
+for (let y = 0; y < TILES_Y; y++) {
 
-  const tilesInTheRow = [];
-  for(let x = 0; x < TILES_X; x++){
-    const tile = new Tile();
-    tile.id = `${x}-${y}`;
-    tile.type = Math.floor((Math.random() * TILE_TYPES));
+    const tilesInTheRow = [];
+    for (let x = 0; x < TILES_X; x++) {
+        const tile = new Tile();
+        tile.id = `${x}-${y}`;
+        tile.type = Math.floor((Math.random() * TILE_TYPES));
 
-    tilesInTheRow.push(tile);
-  }
+        tilesInTheRow.push(tile);
+    }
 
-  const tilesRow = new TilesRow();
-  tilesRow.id = `${y}`;
-  tilesRow.tiles = tilesInTheRow;
+    const tilesRow = new TilesRow();
+    tilesRow.id = `${y}`;
+    tilesRow.tiles = tilesInTheRow;
 
-  tilesRows.push(tilesRow);
+    tilesRows.push(tilesRow);
 }
 
-const getTileset = function(){
-  return tileset;
+const getTileset = function () {
+    return tileset;
 };
 
 const getTilesRows = function () {
-  return tilesRows;
+    return tilesRows;
 };
 
 const getTilesInRow = function (y) {
-  const tilesRow = tilesRows[y];
+    const tilesRow = tilesRows[y];
 
-  if(typeof tilesRow === 'undefined'){
-    return null;
-  }
+    if (typeof tilesRow === 'undefined') {
+        return null;
+    }
 
-  return tilesRow.tiles;
+    return tilesRow.tiles;
 };
 
-const getTile = function(x, y){
-  const tilesRow = getTilesInRow(y);
+const getAvailableTileTypes = function () {
+    return availableTileTypes;
+};
 
-  if(typeof tilesRow === 'undefined'){
-    return null;
-  }
+const getTile = function (x, y) {
+    const tilesRow = getTilesInRow(y);
 
-  const tile = tilesRow[x];
-  if(typeof tile === 'undefined'){
-    return null;
-  }else{
-    return tile;
-  }
+    if (typeof tilesRow === 'undefined') {
+        return null;
+    }
+
+    const tile = tilesRow[x];
+    if (typeof tile === 'undefined') {
+        return null;
+    } else {
+        return tile;
+    }
 };
 
 module.exports = {
-  getTileset: getTileset,
-  getTilesRows: getTilesRows,
-  getTilesInRow: getTilesInRow,
-  getTile: getTile
+    getTileset: getTileset,
+    getTilesRows: getTilesRows,
+    getTilesInRow: getTilesInRow,
+    getTile: getTile,
+    getAvailableTileTypes: getAvailableTileTypes
 };
