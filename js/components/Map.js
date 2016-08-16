@@ -1,8 +1,12 @@
 import React from 'react';
 import Relay from 'react-relay';
 
+import ChangeTileTypeMutation from '../mutations/ChangeTileTypeMutation';
+
 class Map extends React.Component {
     render() {
+        const component = this;
+
         const tileset = this.props.tileset;
         return (
             <div>
@@ -13,7 +17,10 @@ class Map extends React.Component {
                         <tr key={row.id}>
                             {row.tiles.map(tile =>
                                 <td key={tile.id}>
-                                    <select readOnly={true} value={tile.type}>
+                                    <select value={tile.type} onChange={function(event){
+                                        const newTileType = event.target.value;
+                                        component._onTileTypeChanged.apply(component, [tile, newTileType]);
+                                    }}>
                                         {tileset.availableTileTypes.map(availableTileType =>
                                             <option key={availableTileType} value={availableTileType}>{availableTileType}</option>
                                         )}
@@ -27,6 +34,14 @@ class Map extends React.Component {
             </div>
         );
     }
+    _onTileTypeChanged(tile, newTileType){
+        this.props.relay.commitUpdate(
+            new ChangeTileTypeMutation({
+                tile: tile,
+                tileType: newTileType
+            })
+        );
+    }
 }
 
 export default Relay.createContainer(Map, {
@@ -37,7 +52,8 @@ export default Relay.createContainer(Map, {
                     id,
                     tiles {
                         id,
-                        type
+                        type,
+                        ${ChangeTileTypeMutation.getFragment('tile')}
                     },
                 },
                 availableTileTypes
