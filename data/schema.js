@@ -27,10 +27,12 @@ import TilesRow from './models/TilesRow';
 import {
     // Import methods that your schema can use to interact with your database
     getTile,
+    getTileById,
     getTilesRows,
     getTileset,
     getTilesInRow,
-    getAvailableTileTypes
+    getAvailableTileTypes,
+    setTileType
 } from './database';
 
 /**
@@ -43,16 +45,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
         var {type, id} = fromGlobalId(globalId);
         if (type === 'Tile') {
-            const splittedId = id.split('-');
-
-            if (splittedId.length !== 2) {
-                return null;
-            }
-
-            const x = splittedId[0];
-            const y = splittedId[1];
-
-            return getTile(x, y);
+           return getTileById(id);
         } else if (type === 'Tileset') {
             return getTileset(id);
         } else {
@@ -138,6 +131,30 @@ var queryType = new GraphQLObjectType({
     })
 });
 
+var ChangeTileTypeMutation = mutationWithClientMutationId({
+    name: 'ChangeTileTypeMutation',
+    inputFields: {
+        id: {
+            type: new GraphQLNonNull(GraphQLID)
+        },
+        tileType: {
+            type: new GraphQLNonNull(GraphQLInt)
+        }
+    },
+    outputFields: {
+        tile: {
+            type: TileType,
+            resolve: ({modifiedTile}) => modifiedTile
+        }
+    },
+    mutateAndGetPayload: ({id, tileType}) => {
+        const localTileId = fromGlobalId(id).id;
+
+        const modifiedTile = setTileType(localTileId, tileType);
+        return {modifiedTile};
+    }
+});
+
 /**
  * This is the type that will be the root of our mutations,
  * and the entry point into performing writes in our schema.
@@ -145,7 +162,7 @@ var queryType = new GraphQLObjectType({
 var mutationType = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({
-        // Add your own mutations here
+        changeTileType: ChangeTileTypeMutation
     })
 });
 
@@ -155,6 +172,5 @@ var mutationType = new GraphQLObjectType({
  */
 export var Schema = new GraphQLSchema({
     query: queryType,
-    // Uncomment the following after adding some mutation fields:
-    // mutation: mutationType
+    mutation: mutationType
 });

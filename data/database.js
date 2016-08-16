@@ -56,12 +56,12 @@ const getAvailableTileTypes = function () {
     return availableTileTypes;
 };
 
-const setTileType = function(x, y, newTileType){
+const setTileType = function(id, newTileType){
     if(availableTileTypes.indexOf(newTileType) === -1){
         return null;
     }
 
-    const tile = getTile(x, y);
+    const tile = getTileById(id);
 
     if(tile === null){
         return null;
@@ -69,6 +69,19 @@ const setTileType = function(x, y, newTileType){
 
     tile.type = newTileType;
     return tile;
+};
+
+const getTileById = function(id){
+    const splittedId = id.split('-');
+
+    if (splittedId.length !== 2) {
+        return null;
+    }
+
+    const x = splittedId[0];
+    const y = splittedId[1];
+
+    return getTile(x, y);
 };
 
 const getTile = function (x, y) {
@@ -90,6 +103,7 @@ module.exports = {
     getTileset: getTileset,
     getTilesRows: getTilesRows,
     getTilesInRow: getTilesInRow,
+    getTileById: getTileById,
     getTile: getTile,
     setTileType: setTileType,
     getAvailableTileTypes: getAvailableTileTypes
