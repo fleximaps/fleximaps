@@ -42,6 +42,7 @@ class Map extends React.Component {
 
         const scene = this._createScene(canvas);
         scene.debugLayer.show();
+        scene.createOrUpdateSelectionOctree();
 
         this._updateAspectRatio(scene);
 
