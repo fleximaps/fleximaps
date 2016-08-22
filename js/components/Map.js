@@ -10,6 +10,9 @@ import ChangeTileTypeMutation from '../mutations/ChangeTileTypeMutation';
 const VIEWPORT_SIZE = 5;
 const TILE_TYPES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; //TODO get it from backend
 
+const SIZE_X = 20;
+const SIZE_Y = 20;
+
 class Map extends React.Component {
     render() {
         const component = this;
@@ -112,64 +115,85 @@ class Map extends React.Component {
         var xSize = 20;
         var ySize = 20;
 
-        var firstTileMesh = null;
+        this._firstTileMesh = null;
 
-        for(var tileY = 0; tileY < ySize; tileY++){
-            for (var tileX = 0; tileX < xSize; tileX++){
-                var tileTag = 'tile-' + tileX + '-' + tileY;
+        for(var tileY = 0; tileY < SIZE_Y; tileY++){
+            this._createTilesRow(scene, materials, tileY);
+        }
+    }
+    _createTilesRow(scene, materials, tileY){
+        for (var tileX = 0; tileX < SIZE_X; tileX++){
+            const tileTag = this._createTileTag(tileX, tileY);
+            const tileMesh = this._createTileMesh(scene, tileTag);
 
-                let tileMesh = null;
-                if(firstTileMesh === null){
-                    firstTileMesh = BABYLON.Mesh.CreatePlane(tileTag, 1.0, scene);
-                    tileMesh = firstTileMesh;
-                }else{
-                    tileMesh = firstTileMesh.clone(tileTag);
+            const materialIdx = Math.floor(Math.random() * TILE_TYPES.length);
+
+            const origMaterial = materials[materialIdx];
+            tileMesh.material = origMaterial;
+            tileMesh.position.x = tileX;
+            tileMesh.position.y = tileY;
+
+            this._setUpTileActions(scene, tileMesh, origMaterial);
+        }
+    }
+    _createTileTag(tileX, tileY){
+        return 'tile-' + tileX + '-' + tileY;
+    }
+    _createTileMesh(scene, tileTag){
+        let tileMesh = null;
+
+        if(this._firstTileMesh === null){
+            this._firstTileMesh = BABYLON.Mesh.CreatePlane(tileTag, 1.0, scene);
+            tileMesh = this._firstTileMesh;
+        }else{
+            tileMesh = this._firstTileMesh.clone(tileTag);
+        }
+
+        return tileMesh;
+    }
+    _setUpTileActions(scene, tileMesh, origMaterial){
+        tileMesh.actionManager = new BABYLON.ActionManager(scene);
+
+        this._setUpTileHoverInAction(scene, tileMesh, origMaterial);
+        this._setUpTileHoverOutAction(scene, tileMesh, origMaterial);
+    }
+    _setUpTileHoverInAction(scene, tileMesh,origMaterial){
+        const hoverInAnimation = TileHoverInAnimationFactory.create('anim-hover-in-' + tileMesh.tag);
+        tileMesh.animations.push(hoverInAnimation);
+
+        const hoverInAction = new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPointerOverTrigger,
+            function(){
+                if(tileMesh.material === origMaterial){
+                    //Clone the material
+                    tileMesh.material = origMaterial.clone();
                 }
 
-                const materialIdx = Math.floor(Math.random() * TILE_TYPES.length);
-
-                const origMaterial = materials[materialIdx];
-                tileMesh.material = origMaterial;
-                tileMesh.position.x = tileX;
-                tileMesh.position.y = tileY;
-
-                const hoverInAnimation = TileHoverInAnimationFactory.create('anim-hover-in-' + tileTag);
-                const hoverOutAnimation = TileHoverOutAnimationFactory.create('anim-hover-out-' + tileTag);
-                
-                tileMesh.animations.push(hoverInAnimation);
-                tileMesh.animations.push(hoverOutAnimation);
-
-                const hoverInAction = new BABYLON.ExecuteCodeAction(
-                    BABYLON.ActionManager.OnPointerOverTrigger,
-                    function(){
-                        if(tileMesh.material === origMaterial){
-                            //Clone the material
-                            tileMesh.material = origMaterial.clone();
-                        }
-
-                        scene.stopAnimation(tileMesh);
-                        scene.beginDirectAnimation(tileMesh, [hoverInAnimation], 0, 100, false, 1);
-                    }
-                );
-
-                const hoverOutAction = new BABYLON.ExecuteCodeAction(
-                    BABYLON.ActionManager.OnPointerOutTrigger,
-                    function(){
-                        if(tileMesh.material === origMaterial){
-                            //Clone the material
-                            tileMesh.material = origMaterial.clone();
-                        }
-
-                        scene.stopAnimation(tileMesh);
-                        scene.beginDirectAnimation(tileMesh, [hoverOutAnimation], 0, 100, false);
-                    }
-                );
-
-                tileMesh.actionManager = new BABYLON.ActionManager(scene);
-                tileMesh.actionManager.registerAction(hoverInAction);
-                tileMesh.actionManager.registerAction(hoverOutAction);
+                scene.stopAnimation(tileMesh);
+                scene.beginDirectAnimation(tileMesh, [hoverInAnimation], 0, 100, false, 1);
             }
-        }
+        );
+
+        tileMesh.actionManager.registerAction(hoverInAction);
+    }
+    _setUpTileHoverOutAction(scene, tileMesh, origMaterial){
+        const hoverOutAnimation = TileHoverOutAnimationFactory.create('anim-hover-out-' + tileMesh.tag);
+        tileMesh.animations.push(hoverOutAnimation);
+
+        const hoverOutAction = new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPointerOutTrigger,
+            function(){
+                if(tileMesh.material === origMaterial){
+                    //Clone the material
+                    tileMesh.material = origMaterial.clone();
+                }
+
+                scene.stopAnimation(tileMesh);
+                scene.beginDirectAnimation(tileMesh, [hoverOutAnimation], 0, 100, false);
+            }
+        );
+
+        tileMesh.actionManager.registerAction(hoverOutAction);
     }
     _createMaterials(scene){
         return TILE_TYPES.map(function(tileType, index){
