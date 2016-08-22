@@ -177,6 +177,7 @@ class Map extends React.Component {
             const material = new BABYLON.StandardMaterial('material-tile-type-' + index, scene);
             material.diffuseColor = new BABYLON.Color3(1 / (index + 1), 1 / (index + 1), 1 / (index + 1));
             material.specularColor = material.diffuseColor;
+            material.freeze();
 
             return material;
         });
