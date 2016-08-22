@@ -41,6 +41,8 @@ class Map extends React.Component {
         this._engine = engine;
 
         const scene = this._createScene(canvas);
+        scene.ambientColor = new BABYLON.Color3(1, 1, 1);
+        scene.lightsEnabled = false;
         scene.debugLayer.show();
         scene.createOrUpdateSelectionOctree();
 
@@ -100,10 +102,6 @@ class Map extends React.Component {
         camera.attachControl(canvas, false);
 
         this._mainCamera = camera;
-
-        const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 0, -1), scene);
-        light.diffuse = new BABYLON.Color3(1, 1, 1);
-        light.specular = new BABYLON.Color3(1, 1, 1);
 
         const materials =this._createMaterials(scene);
         this._createTiles(scene, materials);
@@ -176,8 +174,7 @@ class Map extends React.Component {
     _createMaterials(scene){
         return TILE_TYPES.map(function(tileType, index){
             const material = new BABYLON.StandardMaterial('material-tile-type-' + index, scene);
-            material.diffuseColor = new BABYLON.Color3(1 / (index + 1), 1 / (index + 1), 1 / (index + 1));
-            material.specularColor = material.diffuseColor;
+            material.ambientColor = new BABYLON.Color3(1 / (index + 1), 1 / (index + 1), 1 / (index + 1));
             material.freeze();
 
             return material;
