@@ -116,6 +116,7 @@ class Map extends React.Component {
         var ySize = 20;
 
         this._firstTileMesh = null;
+        this._firstTileBorderMesh = null;
 
         for(var tileY = 0; tileY < SIZE_Y; tileY++){
             this._createTilesRow(scene, materials, tileY);
@@ -124,7 +125,10 @@ class Map extends React.Component {
     _createTilesRow(scene, materials, tileY){
         for (var tileX = 0; tileX < SIZE_X; tileX++){
             const tileTag = this._createTileTag(tileX, tileY);
+
             const tileMesh = this._createTileMesh(scene, tileTag);
+            const tileBorderMesh = this._createTileBorderMesh(scene, tileTag);
+            tileBorderMesh.parent = tileMesh;
 
             const materialIdx = Math.floor(Math.random() * TILE_TYPES.length);
 
@@ -148,8 +152,27 @@ class Map extends React.Component {
         }else{
             tileMesh = this._firstTileMesh.clone(tileTag);
         }
-
         return tileMesh;
+    }
+    _createTileBorderMesh(scene, tileTag){
+        let tileBorderMesh = null;
+
+        const borderMeshTag = 'border-' + tileTag;
+
+        if(this._firstTileBorderMesh === null){
+            this._firstTileBorderMesh = BABYLON.Mesh.CreateLines(borderMeshTag, [
+                new BABYLON.Vector3(-0.5, -0.5, 0),
+                new BABYLON.Vector3(0.5, -0.5, 0),
+                new BABYLON.Vector3(0.5, 0.5, 0),
+                new BABYLON.Vector3(-0.5, 0.5, 0),
+                new BABYLON.Vector3(-0.5, -0.5, 0)
+            ], scene);
+
+            tileBorderMesh = this._firstTileBorderMesh;
+        }else{
+            tileBorderMesh = this._firstTileBorderMesh.clone(borderMeshTag);
+        }
+        return tileBorderMesh;
     }
     _setUpTileActions(scene, tileMesh, origMaterial){
         tileMesh.actionManager = new BABYLON.ActionManager(scene);
