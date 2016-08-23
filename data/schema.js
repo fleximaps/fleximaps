@@ -78,7 +78,7 @@ var TilesetType = new GraphQLObjectType({
             resolve: () => getTilesRows()
         },
         availableTileTypes: {
-            type: new GraphQLList(GraphQLInt),
+            type: GraphQLInt,
             description: 'Tile types available for this tileset',
             resolve: () => getAvailableTileTypes()
         }

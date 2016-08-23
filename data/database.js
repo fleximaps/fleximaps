@@ -6,12 +6,6 @@ const TILES_X = 10;
 const TILES_Y = 10;
 const TILE_TYPES = 10;
 
-// Mock data
-const availableTileTypes = [];
-for (let i = 0; i < TILE_TYPES; i++) {
-    availableTileTypes.push(i);
-}
-
 const tileset = new Tileset();
 tileset.id = '0';
 
@@ -53,11 +47,11 @@ const getTilesInRow = function (y) {
 };
 
 const getAvailableTileTypes = function () {
-    return availableTileTypes;
+    return TILE_TYPES;
 };
 
 const setTileType = function(id, newTileType){
-    if(availableTileTypes.indexOf(newTileType) === -1){
+    if(newTileType < 0 || newTileType >= TILE_TYPES){
         return null;
     }
 
