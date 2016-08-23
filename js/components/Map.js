@@ -2,14 +2,9 @@ import BABYLON from 'babylonjs';
 import React from 'react';
 import Relay from 'react-relay';
 
-import TileHoverInAnimationFactory from '../babylonjs/animations/tiles/TileHoverInAnimationFactory';
-import TileHoverOutAnimationFactory from '../babylonjs/animations/tiles/TileHoverOutAnimationFactory';
-
 import ChangeTileTypeMutation from '../mutations/ChangeTileTypeMutation';
 
 const VIEWPORT_SIZE = 5;
-
-const SIZE_X = 20;
 
 class Map extends React.Component {
     constructor(){
@@ -60,13 +55,36 @@ class Map extends React.Component {
         }
     }
     _updateTiles(){
+        const component = this;
+
+        this._updateRowsNumber();
+
+        const rows = this.props.tileset.rows;
+        rows.forEach(function(currRow, rowIdx){
+            component._updateRow.apply(component, [currRow, rowIdx]);
+        });
+    }
+    _updateRow(row, rowIdx){
+        const component = this;
+
+        const tileMeshes = this._tiles;
+        const tiles = row.tiles;
+
+        //TODO tile number changed...
+
+        tiles.forEach(function(tile, tileIdx){
+            const tileMesh = tileMeshes[rowIdx][tileIdx];
+
+            tileMesh.material = component._materials[tile.type];
+        });
+    }
+    _updateRowsNumber(){
         const rows = this.props.tileset.rows;
 
         const oldRowsCount = this._oldProps.tileset.rows.length;
         const rowsCount = rows.length;
 
-        //TODO row size changed
-
+        //Check if the row number changed
         if(oldRowsCount > rowsCount){
             //There are fewer rows
             console.warn('Not implemented yet');
@@ -78,7 +96,8 @@ class Map extends React.Component {
             }
         }
     }
-    _onTileTypeChanged(tile){
+    _onTileTypeChanged(tileCoords){
+        const tile = this.props.tileset.rows[tileCoords.y].tiles[tileCoords.x];
         const newTileType = (tile.type + 1) % this.props.tileset.availableTileTypes;
 
         this.props.relay.commitUpdate(
@@ -172,6 +191,8 @@ class Map extends React.Component {
         const scene = this._scene;
         const tiles = row.tiles;
 
+        const newRow = [];
+
         for (var tileX = 0; tileX < tiles.length; tileX++){
             const tile = tiles[tileX];
 
@@ -192,10 +213,13 @@ class Map extends React.Component {
                 {
                     x: tileX,
                     y: tileY
-                },
-                tile
+                }
             );
+
+            newRow.push(tileMesh);
         }
+
+        this._tiles.push(newRow);
     }
     _createTileTag(tileX, tileY){
         return 'tile-' + tileX + '-' + tileY;
@@ -234,65 +258,21 @@ class Map extends React.Component {
         }
         return tileBorderMesh;
     }
-    _setUpTileActions(tileMesh, origMaterial, tileCoords, tile){
+    _setUpTileActions(tileMesh, origMaterial, tileCoords){
         const scene = this._scene;
 
         tileMesh.actionManager = new BABYLON.ActionManager(scene);
 
-        this._setUpTileHoverInAction(tileMesh, origMaterial);
-        this._setUpTileHoverOutAction(tileMesh, origMaterial);
-        this._setUpTileLeftPickAction(tileMesh, tile);
+        this._setUpTileLeftPickAction(tileMesh, tileCoords);
     }
-    _setUpTileHoverInAction(tileMesh,origMaterial){
-        const scene = this._scene;
-
-        const hoverInAnimation = TileHoverInAnimationFactory.create('anim-hover-in-' + tileMesh.tag);
-        tileMesh.animations.push(hoverInAnimation);
-
-        const hoverInAction = new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnPointerOverTrigger,
-            function(){
-                if(tileMesh.material === origMaterial){
-                    //Clone the material
-                    tileMesh.material = origMaterial.clone();
-                }
-
-                scene.stopAnimation(tileMesh);
-                scene.beginDirectAnimation(tileMesh, [hoverInAnimation], 0, 100, false, 1);
-            }
-        );
-
-        tileMesh.actionManager.registerAction(hoverInAction);
-    }
-    _setUpTileHoverOutAction(tileMesh, origMaterial){
-        const scene = this._scene;
-
-        const hoverOutAnimation = TileHoverOutAnimationFactory.create('anim-hover-out-' + tileMesh.tag);
-        tileMesh.animations.push(hoverOutAnimation);
-
-        const hoverOutAction = new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnPointerOutTrigger,
-            function(){
-                if(tileMesh.material === origMaterial){
-                    //Clone the material
-                    tileMesh.material = origMaterial.clone();
-                }
-
-                scene.stopAnimation(tileMesh);
-                scene.beginDirectAnimation(tileMesh, [hoverOutAnimation], 0, 100, false);
-            }
-        );
-
-        tileMesh.actionManager.registerAction(hoverOutAction);
-    }
-    _setUpTileLeftPickAction(tileMesh, tile){
+    _setUpTileLeftPickAction(tileMesh, tileCoords){
         const component = this;
         const scene = this._scene;
 
         const tileLeftPickAction = new BABYLON.ExecuteCodeAction(
             BABYLON.ActionManager.OnLeftPickTrigger,
             function () {
-                component._onTileTypeChanged(tile);
+                component._onTileTypeChanged(tileCoords);
             });
 
         tileMesh.actionManager.registerAction(tileLeftPickAction);
