@@ -14,14 +14,22 @@ const SIZE_X = 20;
 const SIZE_Y = 20;
 
 class Map extends React.Component {
+    constructor(){
+        super();
+
+        this._oldProps = {};
+    }
     render() {
         const component = this;
 
-        const tileset = this.props.tileset;
+        this._update();
 
         return (
             <canvas className="map" ref="mapRef"></canvas>
         );
+    }
+    _update(){
+        //TODO
     }
     _onTileTypeChanged(tile, newTileType){
         this.props.relay.commitUpdate(
@@ -226,6 +234,11 @@ class Map extends React.Component {
 
             return material;
         });
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        this._oldProps = nextProps;
+
+        return true;
     }
 }
 
