@@ -145,7 +145,15 @@ class Map extends React.Component {
             tileMesh.position.x = tileX;
             tileMesh.position.y = tileY;
 
-            this._setUpTileActions(scene, tileMesh, origMaterial);
+            this._setUpTileActions(
+                scene,
+                tileMesh,
+                origMaterial,
+                {
+                    x: tileX,
+                    y: tileY
+                }
+            );
         }
     }
     _createTileTag(tileX, tileY){
@@ -182,11 +190,12 @@ class Map extends React.Component {
         }
         return tileBorderMesh;
     }
-    _setUpTileActions(scene, tileMesh, origMaterial){
+    _setUpTileActions(scene, tileMesh, origMaterial, tileCoords){
         tileMesh.actionManager = new BABYLON.ActionManager(scene);
 
         this._setUpTileHoverInAction(scene, tileMesh, origMaterial);
         this._setUpTileHoverOutAction(scene, tileMesh, origMaterial);
+        this._setUpTileLeftPickAction(scene, tileMesh, tileCoords);
     }
     _setUpTileHoverInAction(scene, tileMesh,origMaterial){
         const hoverInAnimation = TileHoverInAnimationFactory.create('anim-hover-in-' + tileMesh.tag);
@@ -225,6 +234,16 @@ class Map extends React.Component {
         );
 
         tileMesh.actionManager.registerAction(hoverOutAction);
+    }
+    _setUpTileLeftPickAction(scene, tileMesh, tileCoords){
+        const tileLeftPickAction = new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnLeftPickTrigger,
+            function () {
+                console.log("Tile clicked");
+                console.log(tileCoords);
+            });
+
+        tileMesh.actionManager.registerAction(tileLeftPickAction);
     }
     _createMaterials(scene){
         return TILE_TYPES.map(function(tileType, index){
