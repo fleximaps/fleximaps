@@ -8,30 +8,79 @@ import TileHoverOutAnimationFactory from '../babylonjs/animations/tiles/TileHove
 import ChangeTileTypeMutation from '../mutations/ChangeTileTypeMutation';
 
 const VIEWPORT_SIZE = 5;
-const TILE_TYPES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; //TODO get it from backend
 
 const SIZE_X = 20;
-const SIZE_Y = 20;
 
 class Map extends React.Component {
     constructor(){
         super();
 
-        this._oldProps = {};
+        this._oldProps = {
+            tileset: {
+                availableTileTypes: 0,
+                rows: []
+            }
+        };
+
+        this._materials = [];
+        this._tiles = [];
+
+        this._firstTileMesh = null;
+        this._firstTileBorderMesh = null;
+
+        this._scene = null;
     }
     render() {
         const component = this;
 
-        this._update();
+        if(this._scene !== null){
+            this._update();
+        }
 
         return (
             <canvas className="map" ref="mapRef"></canvas>
         );
     }
     _update(){
-        //TODO
+        this._updateTileTypes();
+        this._updateTiles();
     }
-    _onTileTypeChanged(tile, newTileType){
+    _updateTileTypes(){
+        const oldAvailableTileTypes = this._oldProps.tileset.availableTileTypes;
+        const availableTileTypes = this.props.tileset.availableTileTypes;
+
+        if(oldAvailableTileTypes > availableTileTypes){
+            //There are fewer tile types
+            console.warn('Not implemented yet');
+        }else if(oldAvailableTileTypes < availableTileTypes){
+            //There are new tile types
+            for(let tileType = oldAvailableTileTypes; tileType < availableTileTypes; tileType++){
+                this._createTileTypeMaterial();
+            }
+        }
+    }
+    _updateTiles(){
+        const rows = this.props.tileset.rows;
+
+        const oldRowsCount = this._oldProps.tileset.rows.length;
+        const rowsCount = rows.length;
+
+        //TODO row size changed
+
+        if(oldRowsCount > rowsCount){
+            //There are fewer rows
+            console.warn('Not implemented yet');
+        }else if(oldRowsCount < rowsCount){
+            //There are new tile types
+            for(let rowNum = oldRowsCount; rowNum < rowsCount; rowNum++){
+                const row = rows[rowNum];
+                this._createTilesRow(rowNum, row);
+            }
+        }
+    }
+    _onTileTypeChanged(tile){
+        const newTileType = (tile.type + 1) % this.props.tileset.availableTileTypes;
+
         this.props.relay.commitUpdate(
             new ChangeTileTypeMutation({
                 tile: tile,
@@ -43,6 +92,7 @@ class Map extends React.Component {
         const mapRef = this.refs.mapRef;
 
         this._initBabylon(mapRef);
+        this._update();
     }
     _initBabylon(canvas){
         const component = this;
@@ -55,9 +105,9 @@ class Map extends React.Component {
         scene.ambientColor = new BABYLON.Color3(1, 1, 1);
         scene.lightsEnabled = false;
         scene.debugLayer.show();
-        scene.createOrUpdateSelectionOctree();
+        this._scene = scene;
 
-        this._updateAspectRatio(scene);
+        this._updateAspectRatio();
 
         // Register a render loop to repeatedly render the scene
         engine.runRenderLoop(function () {
@@ -66,12 +116,14 @@ class Map extends React.Component {
 
         // Watch for browser/canvas resize events
         window.addEventListener('resize', function () {
-            component._updateAspectRatio.apply(component, [scene]);
+            component._updateAspectRatio.apply(component);
 
             component._engine.resize();
         });
     }
-    _updateAspectRatio(scene){
+    _updateAspectRatio(){
+        const scene = this._scene;
+
         const camera = this._mainCamera;
 
         let height = this.refs.mapRef.height;
@@ -114,52 +166,42 @@ class Map extends React.Component {
 
         this._mainCamera = camera;
 
-        const materials =this._createMaterials(scene);
-        this._createTiles(scene, materials);
-
         return scene;
     }
-    _createTiles(scene, materials){
-        var xSize = 20;
-        var ySize = 20;
+    _createTilesRow(tileY, row){
+        const scene = this._scene;
+        const tiles = row.tiles;
 
-        this._firstTileMesh = null;
-        this._firstTileBorderMesh = null;
+        for (var tileX = 0; tileX < tiles.length; tileX++){
+            const tile = tiles[tileX];
 
-        for(var tileY = 0; tileY < SIZE_Y; tileY++){
-            this._createTilesRow(scene, materials, tileY);
-        }
-    }
-    _createTilesRow(scene, materials, tileY){
-        for (var tileX = 0; tileX < SIZE_X; tileX++){
             const tileTag = this._createTileTag(tileX, tileY);
 
-            const tileMesh = this._createTileMesh(scene, tileTag);
-            const tileBorderMesh = this._createTileBorderMesh(scene, tileTag);
+            const tileMesh = this._createTileMesh(tileTag);
+            const tileBorderMesh = this._createTileBorderMesh(tileTag);
             tileBorderMesh.parent = tileMesh;
 
-            const materialIdx = Math.floor(Math.random() * TILE_TYPES.length);
-
-            const origMaterial = materials[materialIdx];
+            const origMaterial = this._materials[tile.type];
             tileMesh.material = origMaterial;
             tileMesh.position.x = tileX;
             tileMesh.position.y = tileY;
 
             this._setUpTileActions(
-                scene,
                 tileMesh,
                 origMaterial,
                 {
                     x: tileX,
                     y: tileY
-                }
+                },
+                tile
             );
         }
     }
     _createTileTag(tileX, tileY){
         return 'tile-' + tileX + '-' + tileY;
     }
-    _createTileMesh(scene, tileTag){
+    _createTileMesh(tileTag){
+        const scene = this._scene;
         let tileMesh = null;
 
         if(this._firstTileMesh === null){
@@ -170,7 +212,9 @@ class Map extends React.Component {
         }
         return tileMesh;
     }
-    _createTileBorderMesh(scene, tileTag){
+    _createTileBorderMesh(tileTag){
+        const scene = this._scene;
+
         let tileBorderMesh = null;
 
         const borderMeshTag = 'border-' + tileTag;
@@ -190,14 +234,18 @@ class Map extends React.Component {
         }
         return tileBorderMesh;
     }
-    _setUpTileActions(scene, tileMesh, origMaterial, tileCoords){
+    _setUpTileActions(tileMesh, origMaterial, tileCoords, tile){
+        const scene = this._scene;
+
         tileMesh.actionManager = new BABYLON.ActionManager(scene);
 
-        this._setUpTileHoverInAction(scene, tileMesh, origMaterial);
-        this._setUpTileHoverOutAction(scene, tileMesh, origMaterial);
-        this._setUpTileLeftPickAction(scene, tileMesh, tileCoords);
+        this._setUpTileHoverInAction(tileMesh, origMaterial);
+        this._setUpTileHoverOutAction(tileMesh, origMaterial);
+        this._setUpTileLeftPickAction(tileMesh, tile);
     }
-    _setUpTileHoverInAction(scene, tileMesh,origMaterial){
+    _setUpTileHoverInAction(tileMesh,origMaterial){
+        const scene = this._scene;
+
         const hoverInAnimation = TileHoverInAnimationFactory.create('anim-hover-in-' + tileMesh.tag);
         tileMesh.animations.push(hoverInAnimation);
 
@@ -216,7 +264,9 @@ class Map extends React.Component {
 
         tileMesh.actionManager.registerAction(hoverInAction);
     }
-    _setUpTileHoverOutAction(scene, tileMesh, origMaterial){
+    _setUpTileHoverOutAction(tileMesh, origMaterial){
+        const scene = this._scene;
+
         const hoverOutAnimation = TileHoverOutAnimationFactory.create('anim-hover-out-' + tileMesh.tag);
         tileMesh.animations.push(hoverOutAnimation);
 
@@ -235,24 +285,27 @@ class Map extends React.Component {
 
         tileMesh.actionManager.registerAction(hoverOutAction);
     }
-    _setUpTileLeftPickAction(scene, tileMesh, tileCoords){
+    _setUpTileLeftPickAction(tileMesh, tile){
+        const component = this;
+        const scene = this._scene;
+
         const tileLeftPickAction = new BABYLON.ExecuteCodeAction(
             BABYLON.ActionManager.OnLeftPickTrigger,
             function () {
-                console.log("Tile clicked");
-                console.log(tileCoords);
+                component._onTileTypeChanged(tile);
             });
 
         tileMesh.actionManager.registerAction(tileLeftPickAction);
     }
-    _createMaterials(scene){
-        return TILE_TYPES.map(function(tileType, index){
-            const material = new BABYLON.StandardMaterial('material-tile-type-' + index, scene);
-            material.ambientColor = new BABYLON.Color3(1 / (index + 1), 1 / (index + 1), 1 / (index + 1));
-            material.freeze();
+    _createTileTypeMaterial(){
+        const scene = this._scene;
+        const currTileType = this._materials.length;
 
-            return material;
-        });
+        const material = new BABYLON.StandardMaterial('material-tile-type-' + currTileType, scene);
+        material.ambientColor = new BABYLON.Color3(1 / (currTileType + 1), 1 / (currTileType + 1), 1 / (currTileType + 1));
+        material.freeze();
+
+        this._materials.push(material);
     }
     shouldComponentUpdate(nextProps, nextState) {
         this._oldProps = nextProps;
