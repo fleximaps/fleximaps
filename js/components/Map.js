@@ -1,4 +1,6 @@
 import MapFacade from '../map/MapFacade';
+import OrthogonalFormat from '../map/format/orthogonal/OrthogonalFormat';
+
 import React from 'react';
 import Relay from 'react-relay';
 
@@ -78,7 +80,7 @@ class Map extends React.Component {
         this._update();
     }
     _initMap(canvas){
-        const mapFacade = new MapFacade(canvas);
+        const mapFacade = new MapFacade(canvas, new OrthogonalFormat());
         mapFacade.start();
         this._mapFacade = mapFacade;
 

@@ -7,8 +7,9 @@ import BABYLON from 'babylonjs';
 const VIEWPORT_SIZE = 5;
 
 export default class MapFacade{
-    constructor(canvas){
+    constructor(canvas, mapFormat){
         this._canvas = canvas;
+        this._mapFormat = mapFormat;
 
         this._init();
     }
@@ -32,9 +33,6 @@ export default class MapFacade{
     _createCacheObjs(){
         this._tileTypeMaterials = [];
 
-        this._firstTileMesh = null;
-        this._firstTileBorderMesh = null;
-
         this._rows = [];
     }
     _initEngine(){
@@ -47,6 +45,7 @@ export default class MapFacade{
         scene.lightsEnabled = false;
 
         this._scene = scene;
+        this._mapFormat.setScene(scene);
     }
     _createCamera(){
         const camera = new BABYLON.TargetCamera('mainCamera', new BABYLON.Vector3(0, 0, -10), this._scene);
@@ -149,15 +148,10 @@ export default class MapFacade{
 
         for (var tileX = 0; tileX < this._size.cols; tileX++){
             const tileTag = this._createTileTag(tileX, tileY);
-
-            const tileMesh = this._createTileMesh(tileTag);
-            const tileBorderMesh = this._createTileBorderMesh(tileTag);
-            tileBorderMesh.parent = tileMesh;
+            const tileMesh = this._mapFormat.createTileMesh(tileTag, tileX, tileY);
 
             const origMaterial = this._tileTypeMaterials[0];
             tileMesh.material = origMaterial;
-            tileMesh.position.x = tileX;
-            tileMesh.position.y = tileY;
 
             this._setUpTileActions(
                 tileMesh,
@@ -175,40 +169,6 @@ export default class MapFacade{
     }
     _createTileTag(tileX, tileY){
         return 'tile-' + tileX + '-' + tileY;
-    }
-    _createTileMesh(tileTag){
-        const scene = this._scene;
-        let tileMesh = null;
-
-        if(this._firstTileMesh === null){
-            this._firstTileMesh = BABYLON.Mesh.CreatePlane(tileTag, 1.0, scene);
-            tileMesh = this._firstTileMesh;
-        }else{
-            tileMesh = this._firstTileMesh.clone(tileTag);
-        }
-        return tileMesh;
-    }
-    _createTileBorderMesh(tileTag){
-        const scene = this._scene;
-
-        let tileBorderMesh = null;
-
-        const borderMeshTag = 'border-' + tileTag;
-
-        if(this._firstTileBorderMesh === null){
-            this._firstTileBorderMesh = BABYLON.Mesh.CreateLines(borderMeshTag, [
-                new BABYLON.Vector3(-0.5, -0.5, 0),
-                new BABYLON.Vector3(0.5, -0.5, 0),
-                new BABYLON.Vector3(0.5, 0.5, 0),
-                new BABYLON.Vector3(-0.5, 0.5, 0),
-                new BABYLON.Vector3(-0.5, -0.5, 0)
-            ], scene);
-
-            tileBorderMesh = this._firstTileBorderMesh;
-        }else{
-            tileBorderMesh = this._firstTileBorderMesh.clone(borderMeshTag);
-        }
-        return tileBorderMesh;
     }
     _setUpTileActions(tileMesh, origMaterial, tileCoords){
         const scene = this._scene;
