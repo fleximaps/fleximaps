@@ -3,6 +3,7 @@
  */
 
 import BABYLON from 'babylonjs';
+import OrthographicCamera from './camera/OrthographicCamera';
 
 const VIEWPORT_SIZE = 5;
 
@@ -48,8 +49,7 @@ export default class MapFacade{
         this._mapFormat.setScene(scene);
     }
     _createCamera(){
-        const camera = new BABYLON.TargetCamera('mainCamera', new BABYLON.Vector3(0, 0, -10), this._scene);
-        camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+        const camera = new OrthographicCamera('mainCamera', new BABYLON.Vector3(0, 0, -10), this._scene);
 
         // attach the camera to the canvas
         camera.attachControl(this._canvas, false);
