@@ -11,6 +11,9 @@ export default class OrthographicCameraKeyboardInput{
         this._keysDown = [40];
         this._keysLeft = [37];
         this._keysRight = [39];
+
+        this._keysZoomIn = [17];
+        this._keysZoomOut = [18];
     }
     attachControl(element, noPreventDefault = false){
         const input = this;
@@ -21,7 +24,9 @@ export default class OrthographicCameraKeyboardInput{
             if (input._keysUp.indexOf(evt.keyCode) !== -1 ||
                 input._keysDown.indexOf(evt.keyCode) !== -1 ||
                 input._keysLeft.indexOf(evt.keyCode) !== -1 ||
-                input._keysRight.indexOf(evt.keyCode) !== -1) {
+                input._keysRight.indexOf(evt.keyCode) !== -1 ||
+                input._keysZoomIn.indexOf(evt.keyCode) !== -1 ||
+                input._keysZoomOut.indexOf(evt.keyCode) !== -1) {
                 const index = input._keys.indexOf(evt.keyCode);
 
                 if (index === -1) {
@@ -40,7 +45,9 @@ export default class OrthographicCameraKeyboardInput{
             if (input._keysUp.indexOf(evt.keyCode) !== -1 ||
                 input._keysDown.indexOf(evt.keyCode) !== -1 ||
                 input._keysLeft.indexOf(evt.keyCode) !== -1 ||
-                input._keysRight.indexOf(evt.keyCode) !== -1) {
+                input._keysRight.indexOf(evt.keyCode) !== -1 ||
+                input._keysZoomIn.indexOf(evt.keyCode) !== -1 ||
+                input._keysZoomOut.indexOf(evt.keyCode) !== -1) {
                 const index = this._keys.indexOf(evt.keyCode);
 
                 if (index >= 0) {
@@ -97,6 +104,10 @@ export default class OrthographicCameraKeyboardInput{
                     camera.cameraDirection.copyFromFloats(-speed, 0, 0);
                 } else if (this._keysDown.indexOf(keyCode) !== -1) {
                     camera.cameraDirection.copyFromFloats(0, speed, 0);
+                } else if(this._keysZoomIn.indexOf(keyCode) !== -1) {
+                    camera.zoomIn();
+                } else if(this._keysZoomOut.indexOf(keyCode) !== -1) {
+                    camera.zoomOut();
                 }
             }
         }

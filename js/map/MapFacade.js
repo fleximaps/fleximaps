@@ -21,7 +21,7 @@ export default class MapFacade{
         this._initEngine();
         this._createScene();
         this._createCamera();
-        this._updateAspectRatio();
+        this._resize();
     }
     _initFields(){
         this._size = {
@@ -56,31 +56,11 @@ export default class MapFacade{
 
         this._mainCamera = camera;
     }
-    _updateAspectRatio(){
-        const camera = this._mainCamera;
-
+    _resize(){
         let height = this._canvas.height;
         const width = this._canvas.width;
 
-        if (height == 0) height = 1;
-
-        /* Calculate aspect ratio --------------------------------------------------------------------*/
-        const aspectRatio = width / height;
-
-        if (width >= height)
-        {
-            camera.orthoLeft = -VIEWPORT_SIZE*aspectRatio;
-            camera.orthoRight = VIEWPORT_SIZE*aspectRatio;
-            camera.orthoBottom = -VIEWPORT_SIZE;
-            camera.orthoTop = VIEWPORT_SIZE;
-        }
-        else
-        {
-            camera.orthoLeft = -VIEWPORT_SIZE;
-            camera.orthoRight = VIEWPORT_SIZE;
-            camera.orthoBottom = -VIEWPORT_SIZE*aspectRatio;
-            camera.orthoTop = VIEWPORT_SIZE*aspectRatio;
-        }
+        this._mainCamera.resize(width, height);
     }
     start(){
         const engine = this._engine;
@@ -92,7 +72,7 @@ export default class MapFacade{
         });
     }
     resize(){
-        this._updateAspectRatio();
+        this._resize();
         this._engine.resize();
     }
     setTileTypes(tileTypes){
