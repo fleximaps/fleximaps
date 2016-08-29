@@ -3,7 +3,7 @@
  */
 
 import BABYLON from 'babylonjs';
-import OrthographicCamera from './camera/OrthographicCamera';
+import OrthographicCamera from './camera/orthographic/OrthographicCamera';
 
 const VIEWPORT_SIZE = 5;
 
