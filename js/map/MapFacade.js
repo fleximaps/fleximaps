@@ -57,8 +57,8 @@ export default class MapFacade{
         this._mainCamera = camera;
     }
     _resize(){
-        let height = this._canvas.height;
-        const width = this._canvas.width;
+        let height = this._canvas.clientHeight;
+        const width = this._canvas.clientWidth;
 
         this._mainCamera.resize(width, height);
     }
@@ -175,6 +175,10 @@ export default class MapFacade{
     }
     setTileClickedListener(tileClickedListener){
         this._tileClickedListener = tileClickedListener;
+    }
+    centerCamera(){
+        this._mainCamera.position.x = (this._size.cols -1) / 2;
+        this._mainCamera.position.y = (this._rows.length -1) / 2;
     }
     setDebugMode(debugMode){
         if(debugMode){

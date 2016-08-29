@@ -79,6 +79,8 @@ class Map extends React.Component {
         this._initMap(mapRef);
         this._update();
         mapRef.focus();
+
+        this._mapFacade.centerCamera();
     }
     _initMap(canvas){
         const mapFacade = new MapFacade(canvas, new OrthogonalFormat());

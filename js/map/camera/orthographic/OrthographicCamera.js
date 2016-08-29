@@ -35,7 +35,7 @@ export default class OrthographicCamera extends BABYLON.TargetCamera{
         if (canvasHeight == 0) canvasHeight = 1;
 
         /* Calculate aspect ratio --------------------------------------------------------------------*/
-        const aspectRatio = canvasWidth / canvasHeight;;
+        const aspectRatio = canvasWidth / canvasHeight;
 
         if (canvasWidth >= canvasHeight)
         {
