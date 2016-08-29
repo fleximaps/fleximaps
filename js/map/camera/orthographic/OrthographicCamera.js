@@ -8,7 +8,10 @@ export default class OrthographicCamera extends BABYLON.TargetCamera{
 
         this.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 
+        this.speed = 4.0;
+
         this._inputs = new OrthographicCameraInputsManager(this);
+        this._inputs.addKeyboard();
     }
     _checkInputs(){
         this._inputs.checkInputs();
