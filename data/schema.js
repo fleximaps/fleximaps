@@ -10,6 +10,8 @@ import {
     GraphQLString,
 } from 'graphql';
 
+import Container from './Container';
+
 import {
     connectionArgs,
     connectionDefinitions,
@@ -34,6 +36,15 @@ import {
     getAvailableTileTypes,
     setTileType
 } from './database';
+
+const container = new Container();
+const tilesetsService = container.getTilesetsService();
+
+console.log("Before delete all");
+//TODO remove in production
+tilesetsService.deleteAll();
+tilesetsService.create();
+console.log("after all");
 
 /**
  * We get the node interface and field from the Relay library.

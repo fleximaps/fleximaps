@@ -1,3 +1,8 @@
-export default class Tile{
+import mongoose from 'mongoose';
 
-}
+export default mongoose.model(
+    'Tile',
+    {
+        type: Number
+    }
+);
