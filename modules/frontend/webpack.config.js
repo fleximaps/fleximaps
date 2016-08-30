@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = {
     module: {
         loaders: [
@@ -17,7 +19,9 @@ module.exports = {
         filename: "fleximaps-frontend.js",
         libraryTarget: 'umd'
     },
-    node: {
-        fs: "empty"
+    resolve: {
+        alias: {
+            react: path.resolve('./node_modules/react') //Use only one version of react
+        },
     }
 };
