@@ -1,0 +1,44 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+input ChangeTileTypeMutationInput {
+  id: ID!
+  tileType: Int!
+  clientMutationId: String!
+}
+
+type ChangeTileTypeMutationPayload {
+  tile: Tile
+  clientMutationId: String!
+}
+
+type Mutation {
+  changeTileType(input: ChangeTileTypeMutationInput!): ChangeTileTypeMutationPayload
+}
+
+interface Node {
+  id: ID!
+}
+
+type Query {
+  node(id: ID!): Node
+  tileset: Tileset
+}
+
+type Tile implements Node {
+  id: ID!
+  type: Int
+}
+
+type Tileset implements Node {
+  id: ID!
+  rows: [TilesRow]
+  availableTileTypes: Int
+}
+
+type TilesRow implements Node {
+  id: ID!
+  tiles: [Tile]
+}
