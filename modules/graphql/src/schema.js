@@ -10,8 +10,6 @@ import {
     GraphQLString,
 } from 'graphql';
 
-import Container from './Container';
-
 import {
     connectionArgs,
     connectionDefinitions,
@@ -22,29 +20,11 @@ import {
     nodeDefinitions,
 } from 'graphql-relay';
 
+import {maskErrors} from 'graphql-errors';
+
+
 import Tile from './models/Tile';
 import Tileset from './models/Tileset';
-import TilesRow from './models/TilesRow';
-
-import {
-    // Import methods that your schema can use to interact with your database
-    getTile,
-    getTileById,
-    getTilesRows,
-    getTileset,
-    getTilesInRow,
-    getAvailableTileTypes,
-    setTileType
-} from './database';
-
-const container = new Container();
-const tilesetsService = container.getTilesetsService();
-
-console.log("Before delete all");
-//TODO remove in production
-tilesetsService.deleteAll();
-tilesetsService.create();
-console.log("after all");
 
 /**
  * We get the node interface and field from the Relay library.
@@ -56,9 +36,9 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
         var {type, id} = fromGlobalId(globalId);
         if (type === 'Tile') {
-           return getTileById(id);
+            return require('./database').getTileById(id);
         } else if (type === 'Tileset') {
-            return getTileset(id);
+            return require('./database').getTilesetById(id);
         } else {
             return null;
         }
@@ -83,31 +63,25 @@ var TilesetType = new GraphQLObjectType({
     description: 'A tileset',
     fields: () => ({
         id: globalIdField('Tileset'),
-        rows: {
-            type: new GraphQLList(TilesRowType),
-            description: 'Tile rows in a tileset',
-            resolve: () => getTilesRows()
+        tiles: {
+            type: new GraphQLList(TileType),
+            description: 'Tiles in a tileset',
+            resolve: (tileset) => require('./database').getRows(tileset)
         },
         availableTileTypes: {
             type: GraphQLInt,
             description: 'Tile types available for this tileset',
-            resolve: () => getAvailableTileTypes()
-        }
-    }),
-    interfaces: [nodeInterface]
-});
-
-var TilesRowType = new GraphQLObjectType({
-    name: 'TilesRow',
-    description: 'A tiles row',
-    fields: () => ({
-        id: globalIdField('TilesRow'),
-        tiles: {
-            type: new GraphQLList(TileType),
-            description: 'Tiles in a row',
-            resolve: function (tilesRow) {
-                return getTilesInRow(tilesRow.id);
-            }
+            resolve: (tileset) => tileset.tileTypes
+        },
+        numCols: {
+            type: GraphQLInt,
+            description: 'Number of columns in the tileset',
+            resolve: (tileset) => tileset.numCols
+        },
+        numRows: {
+            type: GraphQLInt,
+            description: 'Number of rows in the tileset',
+            resolve: (tileset) => tileset.numRows
         }
     }),
     interfaces: [nodeInterface]
@@ -121,6 +95,14 @@ var TileType = new GraphQLObjectType({
         type: {
             type: GraphQLInt,
             description: 'The type of a tile'
+        },
+        col: {
+            type: GraphQLInt,
+            description: 'The column of a tile'
+        },
+        row: {
+            type: GraphQLInt,
+            description: 'The row of a tile'
         }
     }),
     interfaces: [nodeInterface]
@@ -137,7 +119,7 @@ var queryType = new GraphQLObjectType({
         // Add your own root fields here
         tileset: {
             type: TilesetType,
-            resolve: () => getTileset()
+            resolve: () => require('./database').getTilesetById(1)//TODO fake id
         }
     })
 });
@@ -155,14 +137,15 @@ var ChangeTileTypeMutation = mutationWithClientMutationId({
     outputFields: {
         tile: {
             type: TileType,
-            resolve: ({modifiedTile}) => modifiedTile
+            resolve: (result) => result
         }
     },
     mutateAndGetPayload: ({id, tileType}) => {
-        const localTileId = fromGlobalId(id).id;
+        const localKey = fromGlobalId(id);
+        const localId = localKey.id;
 
-        const modifiedTile = setTileType(localTileId, tileType);
-        return {modifiedTile};
+        return require('./database')
+            .setTileType(localId, tileType);
     }
 });
 
@@ -181,7 +164,11 @@ var mutationType = new GraphQLObjectType({
  * Finally, we construct our schema (whose starting query type is the query
  * type we defined above) and export it.
  */
-export var Schema = new GraphQLSchema({
+var Schema = new GraphQLSchema({
     query: queryType,
     mutation: mutationType
 });
+
+maskErrors(Schema);
+
+export {Schema as Schema};

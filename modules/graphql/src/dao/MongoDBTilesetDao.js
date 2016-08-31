@@ -7,7 +7,15 @@ export default class MongoDBTilesetDao{
     create(newTileset){
         return newTileset.save();
     }
+    save(tileset){
+        return tileset.save();
+    }
     deleteAll(){
         return Tileset.find({}).remove().exec();
+    }
+    findById(id, isReady = true){
+        return Tileset.findOne({
+            isReady: isReady
+        });
     }
 }

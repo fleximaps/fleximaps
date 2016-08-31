@@ -13,7 +13,7 @@ class Map extends React.Component {
         this._oldProps = {
             tileset: {
                 availableTileTypes: 0,
-                rows: []
+                tiles: []
             }
         };
 
@@ -36,34 +36,23 @@ class Map extends React.Component {
     }
     _updateTiles(){
         const component = this;
+        const mapFacade = this._mapFacade;
 
         this._updateSize();
 
-        const rows = this.props.tileset.rows;
-        rows.forEach(function(currRow, rowIdx){
-            component._updateRow.apply(component, [currRow, rowIdx]);
+        const tiles = this.props.tileset.tiles;
+        tiles.forEach(function(currTile, tileIdx){
+            mapFacade.setTileType(currTile.col, currTile.row, currTile.type);
         });
     }
     _updateSize(){
-        const rows = this.props.tileset.rows;
-
-        const numRows = rows.length;
-        const numCols = (numRows === 0)?0:rows[0].tiles.length;
+        const numRows = this.props.tileset.numRows;
+        const numCols = this.props.tileset.numCols;
 
         this._mapFacade._setSize(numCols, numRows);
     }
-    _updateRow(row, rowIdx){
-        const component = this;
-
-        const mapFacade = this._mapFacade;
-        const tiles = row.tiles;
-
-        tiles.forEach(function(tile, tileIdx){
-            mapFacade.setTileType(tileIdx, rowIdx, tile.type);
-        });
-    }
     _handleTileClicked(numCol, numRow){
-        const tile = this.props.tileset.rows[numRow].tiles[numCol];
+        const tile = this.props.tileset.tiles[this._getTileIdx(numCol, numRow)];
         const newTileType = (tile.type + 1) % this.props.tileset.availableTileTypes;
 
         this.props.relay.commitUpdate(
@@ -72,6 +61,11 @@ class Map extends React.Component {
                 tileType: newTileType
             })
         );
+    }
+    _getTileIdx(numCol, numRow){
+        const numCols = this.props.tileset.numCols;
+
+        return numCols * numRow + numCol;
     }
     componentDidMount(){
         const mapRef = this.refs.mapRef;
@@ -109,14 +103,14 @@ export default Relay.createContainer(Map, {
     fragments: {
         tileset: () => Relay.QL`
             fragment on Tileset {
-                rows{
-                    id,
-                    tiles {
-                        id,
-                        type,
-                        ${ChangeTileTypeMutation.getFragment('tile')}
-                    },
+                tiles {
+                    col,
+                    row,
+                    type,
+                    ${ChangeTileTypeMutation.getFragment('tile')}
                 },
+                numCols,
+                numRows,
                 availableTileTypes
             }
         `

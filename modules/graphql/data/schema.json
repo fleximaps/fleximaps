@@ -102,11 +102,6 @@
             },
             {
               "kind": "OBJECT",
-              "name": "TilesRow",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
               "name": "Tile",
               "ofType": null
             }
@@ -134,15 +129,15 @@
               "deprecationReason": null
             },
             {
-              "name": "rows",
-              "description": "Tile rows in a tileset",
+              "name": "tiles",
+              "description": "Tiles in a tileset",
               "args": [],
               "type": {
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "TilesRow",
+                  "name": "Tile",
                   "ofType": null
                 }
               },
@@ -160,52 +155,27 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
+            },
             {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "TilesRow",
-          "description": "A tiles row",
-          "fields": [
-            {
-              "name": "id",
-              "description": "The ID of an object",
+              "name": "numCols",
+              "description": "Number of columns in the tileset",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "tiles",
-              "description": "Tiles in a row",
+              "name": "numRows",
+              "description": "Number of rows in the tileset",
               "args": [],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Tile",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -246,6 +216,30 @@
             {
               "name": "type",
               "description": "The type of a tile",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "col",
+              "description": "The column of a tile",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "row",
+              "description": "The row of a tile",
               "args": [],
               "type": {
                 "kind": "SCALAR",
