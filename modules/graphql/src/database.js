@@ -6,7 +6,7 @@ const tilesService = container.getTilesService();
 
 //TODO remove in production
 tilesetsService.deleteAll();
-tilesetsService.create(10, 10, 10);
+tilesetsService.create(10, 10, 29);
 
 module.exports = {
     getTilesetById: function(id){

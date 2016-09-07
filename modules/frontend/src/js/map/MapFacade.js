@@ -93,7 +93,8 @@ export default class MapFacade{
         const currTileType = this._tileTypeMaterials.length;
 
         const material = new BABYLON.StandardMaterial('material-tile-type-' + currTileType, scene);
-        material.ambientColor = new BABYLON.Color3(1 / (currTileType + 1), 1 / (currTileType + 1), 1 / (currTileType + 1));
+        material.ambientColor = new BABYLON.Color3(1, 1, 1);
+        material.ambientTexture = new BABYLON.Texture('tiles/' + currTileType + '.svg', scene);
         material.freeze();
 
         this._tileTypeMaterials.push(material);
