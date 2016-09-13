@@ -1,9 +1,9 @@
 import Relay from 'react-relay';
 
 export default {
-    tileset: () => Relay.QL`
+    viewer: () => Relay.QL`
         query {
-            tileset(id: $tilesetId)
+            viewer
         }
     `,
 };

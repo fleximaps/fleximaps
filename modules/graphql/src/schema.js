@@ -25,6 +25,7 @@ import {maskErrors} from 'graphql-errors';
 
 import Tile from './models/Tile';
 import Tileset from './models/Tileset';
+import Viewer from './localmodels/Viewer';
 
 /**
  * We get the node interface and field from the Relay library.
@@ -39,7 +40,9 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return require('./database').getTileById(id);
         } else if (type === 'Tileset') {
             return require('./database').getTilesetById(id);
-        } else {
+        } else if (type === 'Viewer'){
+            return require('./database').getViewer();
+        }else{
             return null;
         }
     },
@@ -48,6 +51,8 @@ var {nodeInterface, nodeField} = nodeDefinitions(
             return TileType;
         } else if (obj instanceof Tileset) {
             return TilesetType;
+        } else if(obj instanceof Viewer){
+            return ViewerType;
         } else {
             return null;
         }
@@ -108,6 +113,28 @@ var TileType = new GraphQLObjectType({
     interfaces: [nodeInterface]
 });
 
+const {connectionType: tilesetsConnectionType} =
+    connectionDefinitions({name: 'Tileset', nodeType: TilesetType});
+
+var ViewerType = new GraphQLObjectType({
+    name: 'Viewer',
+    fields: () => ({
+        id: globalIdField('ViewerType'),
+        node: nodeField,
+        tilesets: {
+            type: tilesetsConnectionType,
+            args: connectionArgs,
+            resolve: function(_, args){
+                return require('./database')
+                    .getTilesets()
+                    .then(function(tilesets){
+                        return connectionFromArray(tilesets, args);
+                    });
+            }
+        }
+    })
+});
+
 /**
  * This is the type that will be the root of our query,
  * and the entry point into our schema.
@@ -116,10 +143,23 @@ var queryType = new GraphQLObjectType({
     name: 'Query',
     fields: () => ({
         node: nodeField,
-        // Add your own root fields here
+        viewer: {
+            type: ViewerType,
+            resolve: (_, args) => require('./database').getViewer()
+        },
         tileset: {
+            args: {
+                id: {
+                    type: new GraphQLNonNull(GraphQLID)
+                }
+            },
             type: TilesetType,
-            resolve: () => require('./database').getTilesetById(1)//TODO fake id
+            resolve: function(_, args){
+                const localKey = fromGlobalId(args.id);
+                const localId = localKey.id;
+
+                return require('./database').getTilesetById(localId);
+            }
         }
     })
 });

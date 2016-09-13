@@ -5,7 +5,7 @@ import React from 'react';
 export default class Application extends React.Component {
     render() {
         return (
-            <div className={styles.application} ref="mapRef">{this.props.children}</div>
+            <div className={styles.application}>{this.props.children}</div>
         );
     }
 }

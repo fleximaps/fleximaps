@@ -15,7 +15,11 @@ export default class MongoDBTilesetDao{
     }
     findById(id, isReady = true){
         return Tileset.findOne({
+            '_id': id,
             isReady: isReady
         });
+    }
+    findAll(){
+        return Tileset.find({}).exec();
     }
 }

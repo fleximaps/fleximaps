@@ -1,14 +1,16 @@
 import Container from './Container';
+import Viewer from './localmodels/Viewer';
 
 const container = new Container();
 const tilesetsService = container.getTilesetsService();
 const tilesService = container.getTilesService();
 
-//TODO remove in production
-tilesetsService.deleteAll();
-tilesetsService.create(10, 10, 29);
+const viewer = new Viewer();
 
 module.exports = {
+    getTilesets: function(){
+        return tilesetsService.getTilesets();
+    },
     getTilesetById: function(id){
         return tilesetsService.getById(id);
     },
@@ -21,5 +23,8 @@ module.exports = {
     },
     getRows: function(tileset){
         return tilesService.getRows(tileset);
+    },
+    getViewer: function(){
+        return viewer;
     }
 };

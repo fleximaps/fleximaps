@@ -66,4 +66,7 @@ export default class TilesetsService{
     getById(id){
         return this._tilesetsDao.findById(id);
     }
+    getTilesets(){
+        return this._tilesetsDao.findAll();
+    }
 }

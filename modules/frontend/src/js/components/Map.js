@@ -104,7 +104,7 @@ class Map extends React.Component {
 export default Relay.createContainer(Map, {
     fragments: {
         tileset: () => Relay.QL`
-            fragment on Tileset {
+            fragment on Tileset{
                 tiles {
                     col,
                     row,

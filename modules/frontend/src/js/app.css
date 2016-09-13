@@ -1,3 +1,12 @@
+html {
+    box-sizing: border-box;
+}
+:global(*),
+:global(*):before,
+:global(*):after {
+    box-sizing: inherit;
+}
+
 html, body {
     overflow: hidden;
     width: 100%;
