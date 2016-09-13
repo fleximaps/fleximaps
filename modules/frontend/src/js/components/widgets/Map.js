@@ -2,13 +2,12 @@ import MapFacade from '../../map/MapFacade';
 import OrthogonalFormat from '../../map/format/orthogonal/OrthogonalFormat';
 
 import React from 'react';
-import Relay from 'react-relay';
 
 import ChangeTileTypeMutation from '../../mutations/ChangeTileTypeMutation';
 
 import styles from './Map.css';
 
-class Map extends React.Component {
+export default class Map extends React.Component {
     constructor(){
         super();
 
@@ -100,21 +99,3 @@ class Map extends React.Component {
         return true;
     }
 }
-
-export default Relay.createContainer(Map, {
-    fragments: {
-        tileset: () => Relay.QL`
-            fragment on Tileset{
-                tiles {
-                    col,
-                    row,
-                    type,
-                    ${ChangeTileTypeMutation.getFragment('tile')}
-                },
-                numCols,
-                numRows,
-                availableTileTypes
-            }
-        `
-    }
-});

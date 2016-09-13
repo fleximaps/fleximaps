@@ -3,7 +3,7 @@ import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
 
 import Application from './components/containers/Application';
-import Map from './components/widgets/Map';
+import MapPage from './components/containers/MapPage';
 import MapsListPage from './components/containers/MapsListPage';
 
 import MapQueries from './queries/MapQueries';
@@ -21,7 +21,7 @@ export default (
         />
         <Route
             path="map/:tilesetId"
-            component={Map}
+            component={MapPage}
             queries={MapQueries}
         />
     </Route>
