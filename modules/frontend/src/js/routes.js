@@ -2,9 +2,9 @@ import React from 'react';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
 
-import Application from './components/Application';
-import Map from './components/Map';
-import MapsList from './components/MapsList';
+import Application from './components/containers/Application';
+import Map from './components/widgets/Map';
+import MapsListPage from './components/containers/MapsListPage';
 
 import MapQueries from './queries/MapQueries';
 import MapListQueries from './queries/MapListQueries';
@@ -16,7 +16,7 @@ export default (
         component={Application}
     >
         <IndexRoute
-            component={MapsList}
+            component={MapsListPage}
             queries={MapListQueries}
         />
         <Route

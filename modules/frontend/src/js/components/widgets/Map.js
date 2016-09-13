@@ -1,10 +1,10 @@
-import MapFacade from '../map/MapFacade';
-import OrthogonalFormat from '../map/format/orthogonal/OrthogonalFormat';
+import MapFacade from '../../map/MapFacade';
+import OrthogonalFormat from '../../map/format/orthogonal/OrthogonalFormat';
 
 import React from 'react';
 import Relay from 'react-relay';
 
-import ChangeTileTypeMutation from '../mutations/ChangeTileTypeMutation';
+import ChangeTileTypeMutation from '../../mutations/ChangeTileTypeMutation';
 
 import styles from './Map.css';
 
