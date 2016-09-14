@@ -1,11 +1,12 @@
 import styles from './Application.css';
 
+import CSSModules from 'react-css-modules';
 import React from 'react';
 
-export default class Application extends React.Component {
+export default CSSModules(class Application extends React.Component {
     render() {
         return (
-            <div className={styles.application}>{this.props.children}</div>
+            <div styleName='application'>{this.props.children}</div>
         );
     }
-}
+}, styles);

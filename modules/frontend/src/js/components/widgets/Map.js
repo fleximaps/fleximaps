@@ -4,10 +4,11 @@ import OrthogonalFormat from '../../map/format/orthogonal/OrthogonalFormat';
 import React from 'react';
 
 import ChangeTileTypeMutation from '../../mutations/ChangeTileTypeMutation';
+import CSSModules from 'react-css-modules';
 
 import styles from './Map.css';
 
-export default class Map extends React.Component {
+export default CSSModules(class Map extends React.Component {
     constructor(){
         super();
 
@@ -28,7 +29,7 @@ export default class Map extends React.Component {
         }
 
         return (
-            <canvas className={styles.map} ref="mapRef"></canvas>
+            <canvas styleName='map' ref="mapRef"></canvas>
         );
     }
     _update(){
@@ -98,4 +99,4 @@ export default class Map extends React.Component {
 
         return true;
     }
-}
+}, styles);

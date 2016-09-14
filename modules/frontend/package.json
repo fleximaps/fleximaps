@@ -30,6 +30,7 @@
     "babylonjs": "^2.4.0",
     "history": "^2.1.2",
     "react": "^15.3.1",
+    "react-css-modules": "^3.7.10",
     "react-dom": "^15.3.1",
     "react-relay": "^0.9.2",
     "react-router": "^2.7.0",

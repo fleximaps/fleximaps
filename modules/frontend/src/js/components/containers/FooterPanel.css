@@ -1,0 +1,4 @@
+.panel{
+    composes: panel from '../widgets/Panel.css';
+    padding: 5px;
+}

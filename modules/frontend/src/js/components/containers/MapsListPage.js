@@ -3,7 +3,7 @@ import Panel from '../widgets/Panel';
 import Wrapper from '../widgets/Wrapper';
 import CreateTilesetButton from '../widgets/CreateTilesetButton';
 
-import styles from './MapsListPage.css';
+import footerPanelStyles from './FooterPanel.css';
 
 import React from 'react';
 import Relay from 'react-relay';
@@ -16,7 +16,7 @@ class MapsListPage extends React.Component {
                 <Panel>
                     <MapsList tilesets={this.props.viewer.tilesets}/>
                 </Panel>
-                <Panel className={styles.footerPanel}>
+                <Panel styles={footerPanelStyles}>
                     <CreateTilesetButton/>
                 </Panel>
             </Wrapper>

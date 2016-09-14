@@ -1,11 +1,12 @@
 import styles from './Panel.css';
 
 import React from 'react';
+import CSSModules from 'react-css-modules';
 
-export default class Panel extends React.Component {
+export default CSSModules(class Panel extends React.Component {
     render() {
         return (
-            <div className={styles.panel}>{this.props.children}</div>
+            <div styleName='panel'>{this.props.children}</div>
         );
     }
-}
+}, styles);
