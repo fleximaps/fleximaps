@@ -1,14 +1,24 @@
 import MapsList from '../widgets/MapsList';
+import Panel from '../widgets/Panel';
 import Wrapper from '../widgets/Wrapper';
+import CreateTilesetButton from '../widgets/CreateTilesetButton';
+
+import styles from './MapsListPage.css';
+
 import React from 'react';
 import Relay from 'react-relay';
 import { Link } from 'react-router'
 
-const MapsListPage = class MapsListPage extends React.Component {
+class MapsListPage extends React.Component {
     render() {
         return (
             <Wrapper>
-                <MapsList tilesets={this.props.viewer.tilesets}/>
+                <Panel>
+                    <MapsList tilesets={this.props.viewer.tilesets}/>
+                </Panel>
+                <Panel className={styles.footerPanel}>
+                    <CreateTilesetButton/>
+                </Panel>
             </Wrapper>
         );
     }

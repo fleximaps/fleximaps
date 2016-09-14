@@ -1,0 +1,7 @@
+.panel{
+    border: 1px solid #ddd;
+}
+
+.panel + .panel{
+    border-top-style: none;
+}
