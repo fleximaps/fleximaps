@@ -12,14 +12,17 @@ import { Link } from 'react-router'
 class MapsListPage extends React.Component {
     render() {
         return (
-            <Wrapper>
-                <Panel>
-                    <MapsList tilesets={this.props.viewer.tilesets}/>
-                </Panel>
-                <Panel styles={footerPanelStyles}>
-                    <CreateTilesetButton/>
-                </Panel>
-            </Wrapper>
+            <div>
+                <Wrapper>
+                    <Panel>
+                        <MapsList tilesets={this.props.viewer.tilesets}/>
+                    </Panel>
+                    <Panel styles={footerPanelStyles}>
+                        <CreateTilesetButton/>
+                    </Panel>
+                </Wrapper>
+                {this.props.children}
+            </div>
         );
     }
 };

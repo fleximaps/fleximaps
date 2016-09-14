@@ -7,7 +7,7 @@ import React from 'react';
 export default CSSModules(class CreateTilesetButton extends React.Component {
     render() {
         return (
-            <Link styleName='button' to={`/create`}>Create tileset</Link>
+            <Link styleName='button' to={`/maps/create`}>Create map</Link>
         );
     }
 }, styles);
