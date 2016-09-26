@@ -2,13 +2,11 @@ import MapFacade from '../../map/MapFacade';
 import OrthogonalFormat from '../../map/format/orthogonal/OrthogonalFormat';
 
 import React from 'react';
-
-import ChangeTileTypeMutation from '../../mutations/ChangeTileTypeMutation';
 import CSSModules from 'react-css-modules';
 
 import styles from './Map.css';
 
-export default CSSModules(class Map extends React.Component {
+class Map extends React.Component {
     constructor(){
         super();
 
@@ -53,16 +51,11 @@ export default CSSModules(class Map extends React.Component {
 
         this._mapFacade._setSize(numCols, numRows);
     }
-    _handleTileClicked(numCol, numRow){
+    _onTileClicked(numCol, numRow){
         const tile = this.props.tileset.tiles[this._getTileIdx(numCol, numRow)];
-        const newTileType = (tile.type + 1) % this.props.tileset.availableTileTypes;
 
-        this.props.relay.commitUpdate(
-            new ChangeTileTypeMutation({
-                tile: tile,
-                tileType: newTileType
-            })
-        );
+        this.props.onTileClicked(tile);
+        this.props.onTileClicked(tile);
     }
     _getTileIdx(numCol, numRow){
         const numCols = this.props.tileset.numCols;
@@ -88,7 +81,7 @@ export default CSSModules(class Map extends React.Component {
             mapFacade.resize();
         });
 
-        this._mapFacade.setTileClickedListener(this._handleTileClicked.bind(this));
+        this._mapFacade.setTileClickedListener(this._onTileClicked.bind(this));
     }
     componentWillUnmount(){
         const engine = this._engine;
@@ -99,4 +92,10 @@ export default CSSModules(class Map extends React.Component {
 
         return true;
     }
-}, styles);
+}
+
+Map.propTypes = {
+    onTileClicked: React.PropTypes.func.isRequired
+};
+
+export default CSSModules(Map, styles);

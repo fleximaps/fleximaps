@@ -26,5 +26,8 @@ module.exports = {
     },
     getViewer: function(){
         return viewer;
+    },
+    createTileset: function (numCols, numRows) {
+        return tilesetsService.create(numCols, numRows, 29);
     }
 };

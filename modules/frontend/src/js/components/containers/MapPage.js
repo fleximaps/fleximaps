@@ -8,7 +8,17 @@ import ChangeTileTypeMutation from '../../mutations/ChangeTileTypeMutation';
 class MapPage extends React.Component {
     render() {
         return (
-            <Map tileset={this.props.tileset}/>
+            <Map tileset={this.props.tileset} onTileClicked={this._handleTileClicked.bind(this)}/>
+        );
+    }
+    _handleTileClicked(tile){
+        const newTileType = (tile.type + 1) % this.props.tileset.availableTileTypes;
+
+        this.props.relay.commitUpdate(
+            new ChangeTileTypeMutation({
+                tile: tile,
+                tileType: newTileType
+            })
         );
     }
 };

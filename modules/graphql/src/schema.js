@@ -189,6 +189,29 @@ var ChangeTileTypeMutation = mutationWithClientMutationId({
     }
 });
 
+var CreateTilesetMutation = mutationWithClientMutationId({
+    name: 'CreateTilesetMutation',
+    inputFields: {
+        numCols: {
+            type: new GraphQLNonNull(GraphQLInt)
+        },
+        numRows: {
+            type: new GraphQLNonNull(GraphQLInt)
+        }
+    },
+    outputFields: {
+        tileset: {
+            type: new GraphQLNonNull(TilesetType),
+            resolve: function(result){
+                return result.tileset;
+            }
+        }
+    },
+    mutateAndGetPayload: ({numCols, numRows}) => {
+        return require('./database').createTileset(numCols, numRows);
+    }
+});
+
 /**
  * This is the type that will be the root of our mutations,
  * and the entry point into performing writes in our schema.
@@ -196,7 +219,8 @@ var ChangeTileTypeMutation = mutationWithClientMutationId({
 var mutationType = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({
-        changeTileType: ChangeTileTypeMutation
+        changeTileType: ChangeTileTypeMutation,
+        createTileset: CreateTilesetMutation
     })
 });
 

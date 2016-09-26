@@ -13,15 +13,22 @@ class NumberInput extends React.Component{
         this._id = ID_PREFIX + IdGenerator.generate();
     }
     render() {
+        const onChangeListener = (this.props.onChange === undefined)?undefined:this._onChange.bind(this);
         const inputId = this._id;
         return <BaseInput labelId={inputId} label={this.props.label}>
-            <input styleName="inputElement" type="number" id={inputId}/>
+            <input styleName="inputElement" onChange={onChangeListener} type="number" id={inputId} value={this.props.value}/>
         </BaseInput>
+    }
+    _onChange(event){
+        const newValue = parseInt(event.target.value);
+        this.props.onChange(newValue);
     }
 }
 
 NumberInput.propTypes = {
-    label: React.PropTypes.string
+    label: React.PropTypes.string,
+    value: React.PropTypes.any.isRequired,
+    onChange: React.PropTypes.func
 };
 
 export default CSSModules(NumberInput, styles);
