@@ -131,6 +131,13 @@ var ViewerType = new GraphQLObjectType({
                         return connectionFromArray(tilesets, args);
                     });
             }
+        },
+        tilesetsCount: {
+            type: new GraphQLNonNull(GraphQLInt),
+            resolve: function(){
+                return require('./database')
+                    .getTilesetsCount();
+            }
         }
     })
 });

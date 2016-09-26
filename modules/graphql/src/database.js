@@ -29,5 +29,8 @@ module.exports = {
     },
     createTileset: function (numCols, numRows) {
         return tilesetsService.create(numCols, numRows, 29);
+    },
+    getTilesetsCount: function(){
+        return tilesetsService.getTilesetsCount();
     }
 };

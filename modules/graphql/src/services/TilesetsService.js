@@ -69,4 +69,7 @@ export default class TilesetsService{
     getTilesets(){
         return this._tilesetsDao.findAll();
     }
+    getTilesetsCount(){
+        return this._tilesetsDao.findTilesetsCount();
+    }
 }

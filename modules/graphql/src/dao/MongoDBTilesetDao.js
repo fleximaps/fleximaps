@@ -22,4 +22,7 @@ export default class MongoDBTilesetDao{
     findAll(){
         return Tileset.find({}).exec();
     }
+    findTilesetsCount(){
+        return Tileset.find({}).count();
+    }
 }
