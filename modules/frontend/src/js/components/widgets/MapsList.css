@@ -4,4 +4,9 @@
 
 .mapsListItem{
     padding: 20px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.mapsListItem:last-child{
+    border-bottom-style: none;
 }
