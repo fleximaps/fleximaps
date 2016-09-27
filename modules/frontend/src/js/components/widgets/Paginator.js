@@ -19,7 +19,7 @@ class Paginator extends React.Component {
         const pagesNum = this._getPagesNum();
         for(let i=1; i<=pagesNum; i++){
             const elm = this.props.createNumberCb(i, this.props.page);
-            elms.push(elm);
+            elms.push(<li key={i} styleName='paginatorListItem'>{elm}</li>);
         }
 
         return elms;

@@ -5,3 +5,9 @@
 .panel + .panel{
     border-top-style: none;
 }
+
+.panel:after {
+    content: "";
+    display: table;
+    clear: both;
+}

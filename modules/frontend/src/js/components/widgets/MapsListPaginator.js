@@ -11,9 +11,9 @@ export default class MapsListPaginator extends React.Component{
             createNumberCb={function(pageNum, currentPage){
                 let elm = null;
                 if(pageNum === currentPage){
-                    elm = <li key={pageNum}>{pageNum}</li>;
+                    elm = pageNum;
                 }else{
-                    elm = <li key={pageNum}><Link to={'/maps/?page=' + pageNum}>{pageNum}</Link></li>;
+                    elm = <Link to={'/maps/?page=' + pageNum}>{pageNum}</Link>;
                 }
                 return elm;
             }}

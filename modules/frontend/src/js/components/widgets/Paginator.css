@@ -4,4 +4,22 @@
 
 .paginatorList{
     list-style-type: none;
+    padding: 3px 5px;
+    margin: 0;
+    border: 1px solid #ddd;
+}
+
+.paginatorList:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.paginatorListItem{
+    float: left;
+    margin-right: 5px;
+}
+
+.paginatorListItem:last-child{
+    margin-right: 0;
 }
