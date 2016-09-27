@@ -113,23 +113,24 @@ var TileType = new GraphQLObjectType({
     interfaces: [nodeInterface]
 });
 
-const {connectionType: tilesetsConnectionType} =
-    connectionDefinitions({name: 'Tileset', nodeType: TilesetType});
-
 var ViewerType = new GraphQLObjectType({
     name: 'Viewer',
     fields: () => ({
         id: globalIdField('ViewerType'),
         node: nodeField,
         tilesets: {
-            type: tilesetsConnectionType,
-            args: connectionArgs,
-            resolve: function(_, args){
+            type: new GraphQLNonNull(new GraphQLList(TilesetType)),
+            args: {
+                limit: {
+                    type: new GraphQLNonNull(GraphQLInt)
+                },
+                page: {
+                    type: new GraphQLNonNull(GraphQLInt)
+                }
+            },
+            resolve: function(_, {limit, page}){
                 return require('./database')
-                    .getTilesets()
-                    .then(function(tilesets){
-                        return connectionFromArray(tilesets, args);
-                    });
+                    .getTilesets(page, limit);
             }
         },
         tilesetsCount: {

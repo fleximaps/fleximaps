@@ -8,8 +8,8 @@ const tilesService = container.getTilesService();
 const viewer = new Viewer();
 
 module.exports = {
-    getTilesets: function(){
-        return tilesetsService.getTilesets();
+    getTilesets: function(page, limit){
+        return tilesetsService.getTilesets(page, limit);
     },
     getTilesetById: function(id){
         return tilesetsService.getById(id);

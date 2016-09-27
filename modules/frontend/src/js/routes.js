@@ -22,6 +22,15 @@ export default (
             path="maps"
             component={MapsListPage}
             queries={ViewerQueries}
+            prepareParams={function(params, { location }){
+                    let { page } = location.query;
+                    page = parseInt(page);
+
+                  return {
+                    ...params,
+                    page: page || 1
+                  };
+                }}
         >
             <Route
                 path="create"

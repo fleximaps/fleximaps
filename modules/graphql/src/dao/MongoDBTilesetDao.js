@@ -19,8 +19,13 @@ export default class MongoDBTilesetDao{
             isReady: isReady
         });
     }
-    findAll(){
-        return Tileset.find({}).exec();
+    findAll(page = undefined, limit = undefined){
+        let query = Tileset.find({});
+
+        if(limit !== undefined && page !== undefined){
+            query = query.sort('_id').limit(limit).skip(limit * (page - 1));
+        }
+        return query.exec();
     }
     findTilesetsCount(){
         return Tileset.find({}).count();
