@@ -6,7 +6,7 @@ export default class TilesetsService{
         this._tilesetsDao = tilesetsDao;
         this._tileDao = tileDao;
     }
-    create(numCols, numRows, numTileTypes){
+    create(isHexagonal, numCols, numRows, numTileTypes){
         const tilesetDao = this._tilesetsDao;
         const tileDao = this._tileDao;
 
@@ -14,7 +14,8 @@ export default class TilesetsService{
             numCols: numCols,
             numRows: numRows,
             tileTypes: numTileTypes,
-            isReady: false
+            isReady: false,
+            isHexagonal: isHexagonal
         });
 
         return this._tilesetsDao

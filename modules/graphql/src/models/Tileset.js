@@ -6,6 +6,7 @@ export default mongoose.model(
         tileTypes: Number,
         numCols: Number,
         numRows: Number,
-        isReady: Boolean
+        isReady: Boolean,
+        isHexagonal: Boolean
     }
 );

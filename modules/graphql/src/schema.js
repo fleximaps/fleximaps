@@ -87,6 +87,11 @@ var TilesetType = new GraphQLObjectType({
             type: GraphQLInt,
             description: 'Number of rows in the tileset',
             resolve: (tileset) => tileset.numRows
+        },
+        isHexagonal: {
+            type: new GraphQLNonNull(GraphQLBoolean),
+            description: 'Is it an hexagonal tileset?',
+            resolve: (tileset) => tileset.isHexagonal
         }
     }),
     interfaces: [nodeInterface]
@@ -205,6 +210,9 @@ var CreateTilesetMutation = mutationWithClientMutationId({
         },
         numRows: {
             type: new GraphQLNonNull(GraphQLInt)
+        },
+        isHexagonal: {
+            type: new GraphQLNonNull(GraphQLBoolean)
         }
     },
     outputFields: {
@@ -215,8 +223,8 @@ var CreateTilesetMutation = mutationWithClientMutationId({
             }
         }
     },
-    mutateAndGetPayload: ({numCols, numRows}) => {
-        return require('./database').createTileset(numCols, numRows);
+    mutateAndGetPayload: ({isHexagonal, numCols, numRows}) => {
+        return require('./database').createTileset(isHexagonal, numCols, numRows);
     }
 });
 

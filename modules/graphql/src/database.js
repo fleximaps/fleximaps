@@ -27,8 +27,8 @@ module.exports = {
     getViewer: function(){
         return viewer;
     },
-    createTileset: function (numCols, numRows) {
-        return tilesetsService.create(numCols, numRows, 29);
+    createTileset: function (isHexagonal, numCols, numRows) {
+        return tilesetsService.create(isHexagonal, numCols, numRows, 29);
     },
     getTilesetsCount: function(){
         return tilesetsService.getTilesetsCount();

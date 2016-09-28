@@ -6,6 +6,10 @@ export default mongoose.model(
         type: Number,
         col: Number,
         row: Number,
-        _tileset: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tileset' }]
+        _tileset: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tileset',
+            index: true
+        }
     }
 );
