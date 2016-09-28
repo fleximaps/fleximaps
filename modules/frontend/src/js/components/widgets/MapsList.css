@@ -5,6 +5,7 @@
 .mapsListItem{
     padding: 20px;
     border-bottom: 1px solid #f1f1f1;
+    background-color: #FFFFFF;
 }
 
 .mapsListItem:last-child{

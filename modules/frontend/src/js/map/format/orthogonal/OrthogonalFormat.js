@@ -51,10 +51,13 @@ export default class OrthogonalFormat{
                 new BABYLON.Vector3(-0.5, -0.5, 0)
             ], scene);
 
+            this._firstTileBorderMesh.color = new BABYLON.Color3(0.196, 0.196, 0.196);
+
             tileBorderMesh = this._firstTileBorderMesh;
         }else{
             tileBorderMesh = this._firstTileBorderMesh.clone(borderMeshTag);
         }
+
         return tileBorderMesh;
     }
 }

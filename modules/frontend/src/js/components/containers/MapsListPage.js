@@ -3,6 +3,7 @@ import Panel from '../widgets/Panel';
 import Wrapper from '../widgets/Wrapper';
 import CreateTilesetButton from '../widgets/CreateTilesetButton';
 import MapsListPaginator from '../widgets/MapsListPaginator';
+import PageContent from '../widgets/PageContent';
 
 import styles from './MapsListPage.css';
 import footerPanelStyles from './FooterPanel.css';
@@ -21,7 +22,7 @@ class MapsListPage extends React.Component {
         const pageInfo = tilesets.pageInfo;
 
         return (
-            <div>
+            <PageContent>
                 <Wrapper>
                     <Panel>
                         <MapsList tilesets={viewer.tilesets}/>
@@ -38,7 +39,7 @@ class MapsListPage extends React.Component {
                     </Panel>
                 </Wrapper>
                 {this.props.children}
-            </div>
+            </PageContent>
         );
     }
 };

@@ -44,6 +44,7 @@ export default class MapFacade{
         scene.shadowsEnabled = false;
         scene.ambientColor = new BABYLON.Color3(1, 1, 1);
         scene.lightsEnabled = false;
+        scene.clearColor = new BABYLON.Color3(0.976, 0.976, 0.976);
 
         this._scene = scene;
         this._mapFormat.setScene(scene);

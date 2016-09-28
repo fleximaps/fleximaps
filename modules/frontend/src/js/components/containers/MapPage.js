@@ -1,7 +1,9 @@
 import Relay from 'react-relay';
 import React from 'react';
 
+import styles from './MapPage.css';
 import Map from '../widgets/Map';
+import CSSModules from 'react-css-modules';
 
 import ChangeTileTypeMutation from '../../mutations/ChangeTileTypeMutation';
 
@@ -21,9 +23,11 @@ class MapPage extends React.Component {
             })
         );
     }
-};
+}
 
-export default Relay.createContainer(MapPage, {
+const MapPageCss = CSSModules(MapPage, styles);
+
+export default Relay.createContainer(MapPageCss, {
     fragments: {
         tileset: () => Relay.QL`
             fragment on Tileset{
