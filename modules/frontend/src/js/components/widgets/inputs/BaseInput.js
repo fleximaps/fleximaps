@@ -5,11 +5,30 @@ import styles from './BaseInput.css';
 
 class BaseInput extends React.Component{
     render(){
+        let renderResult = null;
+
+        if(this.props.reverse){
+            renderResult = this._renderReverse();
+        }else{
+            renderResult = this._renderNormal();
+        }
+
+        return renderResult;
+    }
+    _renderNormal(){
         return <div styleName="input">
             {this._renderLabel()}
             <div styleName="inputWidget">
                 {this.props.children}
             </div>
+        </div>;
+    }
+    _renderReverse(){
+        return <div styleName="input">
+            <div styleName="inputWidget">
+                {this.props.children}
+            </div>
+            {this._renderLabel()}
         </div>;
     }
     _renderLabel(){
@@ -24,7 +43,12 @@ class BaseInput extends React.Component{
 BaseInput.propTypes = {
     labelId: React.PropTypes.string.isRequired,
     label: React.PropTypes.string,
-    children: React.PropTypes.node.isRequired
+    children: React.PropTypes.node.isRequired,
+    reverse: React.PropTypes.bool
+};
+
+BaseInput.defaultProps = {
+    reverse: false
 };
 
 export default CSSModules(BaseInput, styles);

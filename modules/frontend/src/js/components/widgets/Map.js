@@ -1,5 +1,6 @@
 import MapFacade from '../../map/MapFacade';
 import OrthogonalFormat from '../../map/format/orthogonal/OrthogonalFormat';
+import HexagonalFormat from '../../map/format/hexagonal/HexagonalFormat';
 
 import React from 'react';
 import CSSModules from 'react-css-modules';
@@ -72,7 +73,8 @@ class Map extends React.Component {
         this._mapFacade.centerCamera();
     }
     _initMap(canvas){
-        const mapFacade = new MapFacade(canvas, new OrthogonalFormat());
+        const mapFormat = this._getFormat();
+        const mapFacade = new MapFacade(canvas, mapFormat);
         mapFacade.start();
         this._mapFacade = mapFacade;
 
@@ -82,6 +84,17 @@ class Map extends React.Component {
         });
 
         this._mapFacade.setTileClickedListener(this._onTileClicked.bind(this));
+    }
+    _getFormat(){
+        let format = null;
+
+        if(this.props.tileset.isHexagonal){
+            format = new HexagonalFormat();
+        }else{
+            format = new OrthogonalFormat();
+        }
+
+        return format;
     }
     componentWillUnmount(){
         const engine = this._engine;

@@ -39,7 +39,8 @@ export default Relay.createContainer(MapPageCss, {
                 },
                 numCols,
                 numRows,
-                availableTileTypes
+                availableTileTypes,
+                isHexagonal
             }
         `
     }

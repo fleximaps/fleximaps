@@ -27,7 +27,8 @@ export default class CreateTilesetMutation extends Relay.Mutation {
     getVariables() {
         return {
             numCols: this.props.numCols,
-            numRows: this.props.numRows
+            numRows: this.props.numRows,
+            isHexagonal: this.props.isHexagonal
         };
     }
 }

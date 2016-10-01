@@ -3,6 +3,7 @@ import React from 'react';
 import Overlay from './Overlay';
 
 import NumberInput from './inputs/NumberInput';
+import CheckboxInput from './inputs/CheckboxInput';
 import Button from './inputs/Button';
 
 class CreateMapOverlay extends React.Component {
@@ -11,7 +12,8 @@ class CreateMapOverlay extends React.Component {
 
         this.state= {
             numCols: 10,
-            numRows: 10
+            numRows: 10,
+            isHexagonal: true
         };
     }
     render() {
@@ -21,6 +23,7 @@ class CreateMapOverlay extends React.Component {
                 <form>
                     <NumberInput onChange={this._onNumColsChange.bind(this)} label="Number of columns" value={this.state.numCols}/>
                     <NumberInput onChange={this._onNumRowsChange.bind(this)} label="Number of rows" value={this.state.numRows}/>
+                    <CheckboxInput onChange={this._onIsHexagonalChange.bind(this)} label="Is it an hexagonal map?" value={this.state.isHexagonal}/>
                     <Button onClick={this._onSubmit.bind(this)}>Create</Button>
                 </form>
             </Overlay>
@@ -34,6 +37,11 @@ class CreateMapOverlay extends React.Component {
     _onNumRowsChange(value){
         this.setState({
             numRows: value
+        });
+    }
+    _onIsHexagonalChange(value){
+        this.setState({
+            isHexagonal: value
         });
     }
     _onSubmit(){
