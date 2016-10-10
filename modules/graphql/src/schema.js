@@ -118,6 +118,40 @@ var TileType = new GraphQLObjectType({
     interfaces: [nodeInterface]
 });
 
+var TileType = new GraphQLObjectType({
+    name: 'Tile',
+    description: 'A tile',
+    fields: () => ({
+        id: globalIdField('Tile'),
+        type: {
+            type: GraphQLInt,
+            description: 'The type of a tile'
+        },
+        col: {
+            type: GraphQLInt,
+            description: 'The column of a tile'
+        },
+        row: {
+            type: GraphQLInt,
+            description: 'The row of a tile'
+        }
+    }),
+    interfaces: [nodeInterface]
+});
+
+var TileTypeType = new GraphQLObjectType({
+    name: 'TileType',
+    description: 'A tile type',
+    fields: () => ({
+        id: globalIdField('TileType'),
+        name: {
+            type: GraphQLString,
+            description: 'The name of this tile type'
+        }
+    }),
+    interfaces: [nodeInterface]
+});
+
 var ViewerType = new GraphQLObjectType({
     name: 'Viewer',
     fields: () => ({
@@ -228,6 +262,35 @@ var CreateTilesetMutation = mutationWithClientMutationId({
     }
 });
 
+var ImportTilesetMutation = mutationWithClientMutationId({
+    name: 'ImportTilesetMutation',
+    inputFields: {
+        numCols: {
+            type: new GraphQLNonNull(GraphQLInt)
+        },
+        numRows: {
+            type: new GraphQLNonNull(GraphQLInt)
+        },
+        isHexagonal: {
+            type: new GraphQLNonNull(GraphQLBoolean)
+        },
+        tileTypes: {
+            type: new GraphQLNonNull(new GraphQLList(GraphQLInt))
+        }
+    },
+    outputFields: {
+        tileset: {
+            type: new GraphQLNonNull(TilesetType),
+            resolve: function(result){
+                return result.tileset;
+            }
+        }
+    },
+    mutateAndGetPayload: ({isHexagonal, numCols, numRows, tileTypes}) => {
+        return require('./database').importTileset(isHexagonal, numCols, numRows, tileTypes);
+    }
+});
+
 /**
  * This is the type that will be the root of our mutations,
  * and the entry point into performing writes in our schema.
@@ -236,7 +299,8 @@ var mutationType = new GraphQLObjectType({
     name: 'Mutation',
     fields: () => ({
         changeTileType: ChangeTileTypeMutation,
-        createTileset: CreateTilesetMutation
+        createTileset: CreateTilesetMutation,
+        importTileset: ImportTilesetMutation
     })
 });
 

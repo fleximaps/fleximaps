@@ -32,5 +32,8 @@ module.exports = {
     },
     getTilesetsCount: function(){
         return tilesetsService.getTilesetsCount();
+    },
+    importTileset: function (isHexagonal, numCols, numRows, tileTypes) {
+        return tilesetsService.importTileset(isHexagonal, numCols, numRows, 29, tileTypes);
     }
 };

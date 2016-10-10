@@ -1,5 +1,7 @@
 import Tileset from '../models/Tileset';
 import Tile from '../models/Tile';
+import Promise from 'bluebird';
+
 
 export default class TilesetsService{
     constructor(tilesetsDao, tileDao){
@@ -7,6 +9,20 @@ export default class TilesetsService{
         this._tileDao = tileDao;
     }
     create(isHexagonal, numCols, numRows, numTileTypes){
+        const tileTypes = [];
+        for(let i = 0; i < numCols*numRows; i++) {
+            const tileType = Math.floor((Math.random() * numTileTypes));
+            tileTypes.push(tileType);
+        }
+
+        return this.importTileset(isHexagonal, numCols, numRows, numTileTypes, tileTypes);
+    }
+    importTileset(isHexagonal, numCols, numRows, numTileTypes, tileTypes){
+        //Validate
+        if(tileTypes.length !== numCols* numRows){
+            return Promise.reject("Validation failed: TileTypes count isn't numColsXnumRows");
+        } 
+        
         const tilesetDao = this._tilesetsDao;
         const tileDao = this._tileDao;
 
@@ -21,18 +37,17 @@ export default class TilesetsService{
         return this._tilesetsDao
             .create(newTileset)
             .then(function(tileset){
-                var tiles = [];
+                const tiles = tileTypes.map(function(tileType, index){
+                    const colNum = index % numCols;
+                    const rowNum = (index - colNum) / numCols;
 
-                for(let rowNum = 0; rowNum < tileset.numRows; rowNum++){
-                    for(let colNum = 0; colNum < tileset.numCols; colNum++){
-                        tiles.push(new Tile({
-                            type: Math.floor((Math.random() * tileset.tileTypes)),
-                            col: colNum,
-                            row: rowNum,
-                            _tileset: tileset._id
-                        }));
-                    }
-                }
+                    return new Tile({
+                        type: tileType,
+                        col: colNum,
+                        row: rowNum,
+                        _tileset: tileset._id
+                    })
+                });
 
                 return tileDao
                     .createMany(tiles)
