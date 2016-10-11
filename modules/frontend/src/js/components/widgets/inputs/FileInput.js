@@ -27,9 +27,9 @@ class FileInput extends React.Component{
         let errorsHtml = null;
         if(errors.length !== 0){
             errorsHtml = <div>
-                <ul>
+                <ul styleName="errorsList">
                     {errors.map(function(error, index){
-                        return <li key={index}>{error}</li>
+                        return <li styleName="errorItem" key={index}>{error}</li>
                     })}
                 </ul>
             </div>
