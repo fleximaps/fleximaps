@@ -35,6 +35,8 @@ export default class MapFacade{
         this._tileTypeMaterials = [];
 
         this._rows = [];
+
+        this._octree = null;
     }
     _initEngine(){
         this._engine = new BABYLON.Engine(this._canvas, true);
@@ -56,6 +58,13 @@ export default class MapFacade{
         camera.attachControl(this._canvas, false);
 
         this._mainCamera = camera;
+    }
+    _createOrUpdateOctree(){
+        const octree = this._scene.createOrUpdateSelectionOctree();
+        if(this._octree === null){
+            this._octree = octree;
+            //octree.dynamicContent.push(this._mainCamera);
+        }
     }
     _resize(){
         let height = this._canvas.clientHeight;
@@ -101,8 +110,15 @@ export default class MapFacade{
         this._tileTypeMaterials.push(material);
     }
     _setSize(numCols, numRows){
+        const oldRowsCount = this._rows.length;
+        const oldColsCount = this._size.cols;
+
         this._setNumCols(numCols);
         this._setNumRows(numRows);
+
+        if(oldColsCount !== numCols || oldRowsCount !== numRows){
+            this._createOrUpdateOctree();
+        }
     }
     _setNumCols(numCols){
         this._size.cols = numCols;
