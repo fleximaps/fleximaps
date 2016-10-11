@@ -7,6 +7,7 @@ import Application from './components/containers/Application';
 import MapPage from './components/containers/MapPage';
 import MapsListPage from './components/containers/MapsListPage';
 import CreateMapContainer from './components/containers/CreateMapContainer';
+import ImportMapContainer from './components/containers/ImportMapContainer';
 
 import MapQueries from './queries/MapQueries';
 import ViewerQueries from './queries/ViewerQueries';
@@ -35,6 +36,11 @@ export default (
             <Route
                 path="create"
                 component={CreateMapContainer}
+                queries={ViewerQueries}
+            />
+            <Route
+                path="import"
+                component={ImportMapContainer}
                 queries={ViewerQueries}
             />
         </Route>

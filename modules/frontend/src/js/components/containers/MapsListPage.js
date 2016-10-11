@@ -2,6 +2,7 @@ import MapsList from '../widgets/MapsList';
 import Panel from '../widgets/Panel';
 import Wrapper from '../widgets/Wrapper';
 import CreateTilesetButton from '../widgets/CreateTilesetButton';
+import ImportTilesetButton from '../widgets/ImportTilesetButton';
 import MapsListPaginator from '../widgets/MapsListPaginator';
 import PageContent from '../widgets/PageContent';
 
@@ -29,6 +30,7 @@ class MapsListPage extends React.Component {
                     </Panel>
                     <Panel styles={footerPanelStyles}>
                         <CreateTilesetButton/>
+                        <ImportTilesetButton/>
                         <div styleName='paginator'>
                             <MapsListPaginator
                                 pageSize={PAGE_SIZE}
