@@ -39,6 +39,8 @@ export default class HexagonalFormat{
             tileMesh.position.y += SQRT3*SIZE/2.0;
         }
 
+        tileMesh.freezeWorldMatrix();
+
         return tileMesh;
     }
     _createTileBorderMesh(tileTag){
@@ -53,6 +55,8 @@ export default class HexagonalFormat{
         }else{
             tileBorderMesh = this._firstTileBorderMesh.clone(borderMeshTag);
         }
+
+        tileBorderMesh.freezeWorldMatrix();
 
         return tileBorderMesh;
     }

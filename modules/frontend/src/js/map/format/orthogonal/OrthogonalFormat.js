@@ -32,6 +32,7 @@ export default class OrthogonalFormat{
 
         tileMesh.position.x = tileX;
         tileMesh.position.y = tileY;
+        tileMesh.freezeWorldMatrix();
 
         return tileMesh;
     }
@@ -57,6 +58,7 @@ export default class OrthogonalFormat{
         }else{
             tileBorderMesh = this._firstTileBorderMesh.clone(borderMeshTag);
         }
+        tileBorderMesh.freezeWorldMatrix();
 
         return tileBorderMesh;
     }
