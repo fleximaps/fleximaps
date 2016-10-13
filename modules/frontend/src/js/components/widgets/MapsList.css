@@ -3,11 +3,21 @@
 }
 
 .mapsListItem{
-    padding: 20px;
+    padding: 20px 20px 20px 100px;
     border-bottom: 1px solid #f1f1f1;
     background-color: #FFFFFF;
 }
 
 .mapsListItem:last-child{
     border-bottom-style: none;
+}
+
+.hexagonal{
+    background: transparent url('../../../resources/formats/hexagonal.png') 20px center no-repeat;
+    background-size: 45px 39px;
+}
+
+.quadratic{
+    background: transparent url('../../../resources/formats/quad.png') 20px center no-repeat;
+    background-size: 39px 39px;
 }

@@ -9,7 +9,8 @@ export default CSSModules(class MapsList extends React.Component {
         return (
             <div styleName='mapsList'>
                 {this.props.tilesets.map(function(map){
-                    return <div styleName='mapsListItem' key={map.id}>
+                    const styleName = 'mapsListItem ' + (map.isHexagonal?'hexagonal':'quadratic');
+                    return <div styleName={styleName} key={map.id}>
                         Size: {map.numCols}x{map.numRows}<br/>
                         <Link to={`/map/${map.id}`}>View map</Link>
                     </div>
@@ -17,4 +18,4 @@ export default CSSModules(class MapsList extends React.Component {
             </div>
         );
     }
-}, styles);
+}, styles, {allowMultiple: true});

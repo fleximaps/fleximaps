@@ -56,7 +56,8 @@ export default Relay.createContainer(MapsListPageCss, {
                     id,
                     numCols,
                     numRows,
-                    availableTileTypes
+                    availableTileTypes,
+                    isHexagonal
                 },
                 tilesetsCount
             }
