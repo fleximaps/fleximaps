@@ -97,11 +97,11 @@ export default class OrthographicCameraKeyboardInput{
                 var speed = camera._computeLocalCameraSpeed();
 
                 if (this._keysLeft.indexOf(keyCode) !== -1) {
-                    camera.cameraDirection.copyFromFloats(speed, 0, 0);
+                    camera.cameraDirection.copyFromFloats(-speed, 0, 0);
                 } else if (this._keysUp.indexOf(keyCode) !== -1) {
                     camera.cameraDirection.copyFromFloats(0, speed, 0);
                 } else if (this._keysRight.indexOf(keyCode) !== -1) {
-                    camera.cameraDirection.copyFromFloats(-speed, 0, 0);
+                    camera.cameraDirection.copyFromFloats(speed, 0, 0);
                 } else if (this._keysDown.indexOf(keyCode) !== -1) {
                     camera.cameraDirection.copyFromFloats(0, -speed, 0);
                 } else if(this._keysZoomIn.indexOf(keyCode) !== -1) {
