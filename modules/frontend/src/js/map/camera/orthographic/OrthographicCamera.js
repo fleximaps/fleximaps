@@ -3,12 +3,15 @@ import BABYLON from 'babylonjs';
 import OrthographicCameraInputsManager from './OrthographicCameraInputsManager';
 
 export default class OrthographicCamera extends BABYLON.TargetCamera{
-    constructor(tag, position, scene, viewportSize = 5, scale = 1, zoomStep = 0.1){
+    constructor(tag, position, scene, viewportSize = 5, scale = 1, zoomStep = 0.1, maxScale = 2, minScale = 0.1){
         super(tag, position, scene);
 
         this._viewportSize = viewportSize;
         this._scale = scale;
         this._zoomStep = zoomStep;
+
+        this._minScale = minScale;
+        this._maxScale = maxScale;
 
         this.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 
@@ -67,10 +70,16 @@ export default class OrthographicCamera extends BABYLON.TargetCamera{
     }
     zoomIn(){
         this._scale += this._zoomStep*this._computeLocalCameraSpeed();
+        if(this._scale >= this._maxScale){
+            this._scale = this._maxScale;
+        }
         this.resize();
     }
     zoomOut(){
         this._scale -= this._zoomStep*this._computeLocalCameraSpeed();
+        if(this._scale <= this._minScale){
+            this._scale = this._minScale;
+        }
         this.resize();
     }
 }
