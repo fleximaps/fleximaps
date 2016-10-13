@@ -83,6 +83,8 @@ class Map extends React.Component {
             mapFacade.resize();
         });
 
+        this.refs.mapRef.onselectstart = function () { return false; }
+
         this._mapFacade.setTileClickedListener(this._onTileClicked.bind(this));
     }
     _getFormat(){
