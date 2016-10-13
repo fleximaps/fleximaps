@@ -4,7 +4,7 @@
 
 .mapsListItem{
     padding: 20px 20px 20px 100px;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid #d8d8d8;
     background-color: #FFFFFF;
 }
 
@@ -20,4 +20,24 @@
 .quadratic{
     background: transparent url('../../../resources/formats/quad.png') 20px center no-repeat;
     background-size: 39px 39px;
+}
+
+@media (min-width: 670px) {
+    .mapsList{
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .mapsListItem{
+        width: 50%;
+    }
+
+    .mapsListItem:nth-child(2n+1){
+        border-right: 1px solid #d8d8d8;
+    }
+
+    .mapsListItem:nth-child(2n+1):nth-last-child(-n+2),
+    .mapsListItem:nth-child(2n+1):nth-last-child(-n+2) ~ .mapsListItem {
+        border-bottom: none;
+    }
 }

@@ -1,4 +1,16 @@
 .wrapper{
-    max-width: 980px;
+    max-width: 320px;
     margin: 0 auto;
+}
+
+@media (min-width: 670px) {
+    .wrapper{
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 1000px) {
+    .wrapper{
+        max-width: 960px;
+    }
 }
