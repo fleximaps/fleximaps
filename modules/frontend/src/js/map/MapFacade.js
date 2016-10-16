@@ -63,7 +63,6 @@ export default class MapFacade{
         const octree = this._scene.createOrUpdateSelectionOctree();
         if(this._octree === null){
             this._octree = octree;
-            //octree.dynamicContent.push(this._mainCamera);
         }
     }
     _resize(){
@@ -204,5 +203,8 @@ export default class MapFacade{
         }else{
             this._scene.debugLayer.hide();
         }
+    }
+    createScreenshot(){
+        BABYLON.Tools.CreateScreenshot(this._engine, this._mainCamera, {precision: 2});
     }
 }

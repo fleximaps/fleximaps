@@ -28,7 +28,14 @@ class Map extends React.Component {
         }
 
         return (
-            <canvas styleName='map' ref="mapRef"></canvas>
+            <div styleName='mapWrapper'>
+                <canvas styleName='map' ref="mapRef"></canvas>
+                <div styleName='sidePanel'>
+                    <button styleName='slidePanelButton exportButton' type="button" onClick={this._onExportClicked.bind(this)}>
+                        Download
+                    </button>
+                </div>
+            </div>
         );
     }
     _update(){
@@ -107,10 +114,19 @@ class Map extends React.Component {
 
         return true;
     }
+    _onExportClicked(){
+        this._mapFacade.createScreenshot();
+    }
 }
 
 Map.propTypes = {
     onTileClicked: React.PropTypes.func.isRequired
 };
 
-export default CSSModules(Map, styles);
+export default CSSModules(
+    Map,
+    styles,
+    {
+        allowMultiple: true
+    }
+);
