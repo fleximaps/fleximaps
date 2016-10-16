@@ -6,6 +6,12 @@ This is a learning project that I used for lerning relay and WebGL.
 
 FlexiMaps allows creating, editing, exporting and importing hexagonal and rectangular tile maps.
 
+##Screenshots
+![Maps list](https://github.com/fleximaps/fleximaps/raw/master/docs/imgs/maps-list.png "Maps list")
+![Hexagonal map](https://github.com/fleximaps/fleximaps/raw/master/docs/imgs/hexagonal-map.png "Hexagonal map")
+![Hexagonal map big](https://github.com/fleximaps/fleximaps/raw/master/docs/imgs/hexagonal-map-big.png "Hexagonal map big")
+![Tile map](https://github.com/fleximaps/fleximaps/raw/master/docs/imgs/rect-map.png "Tile map")
+
 ##Getting started
 ###Requirements:
 * MongoDB
